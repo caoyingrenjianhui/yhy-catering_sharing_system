@@ -6,7 +6,7 @@ import com.example.domain.Category;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author 尹洪运
@@ -17,4 +17,8 @@ public interface ICategoryService extends IService<Category> {
     Result add(Category category);
 
     Result getAll();
+
+    Result delete(Integer categoryID);
+
+    Result update(Category category);
 }

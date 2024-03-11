@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +30,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
 
     @Override
     public Result add(Category category) {
-        category.setCreateTime(LocalDateTime.now().toString());
+//        检查是否有相同的类型
+        Category selectByName = categoryDao.selectByName(category.getCategoryName());
+        if (selectByName != null) {
+            return new Result(selectByName, Code.SAVE_ERR, "已有相同记录");
+        }
+        category.setCreateTime(LocalDate.now().toString());
         Map<String, Object> map = ThreadLocalUtil.get();
         category.setUserID((String) map.get("userID"));
         int insert = categoryDao.insert(category);
@@ -48,4 +52,27 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
         List<Category> list = categoryDao.getAll();
         return new Result(list, Code.GET_OK, "查询成功");
     }
+
+    @Override
+    public Result delete(Integer categoryID) {
+        int deleteById = categoryDao.deleteById(categoryID);
+        if (deleteById != 0) {
+            return new Result(null, Code.DELETE_OK, "删除成功");
+        } else {
+            return new Result(null, Code.DELETE_ERR, "删除失败");
+        }
+    }
+
+    @Override
+    public Result update(Category category) {
+        Category selectById = categoryDao.selectById(category.getCategoryID());
+        if (selectById == null) {
+            return new Result(null, Code.UPDATE_ERR, "无此分类");
+        }
+        selectById.setModifyTime(LocalDate.now().toString());
+        categoryDao.updateById(selectById);
+        return new Result(selectById, Code.UPDATE_OK, "修改成功");
+    }
+
+
 }

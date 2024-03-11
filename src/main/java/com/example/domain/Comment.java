@@ -1,7 +1,6 @@
 package com.example.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
@@ -33,7 +32,7 @@ public class Comment implements Serializable {
 
     private String content;
 
-    private LocalDateTime timestamp;
+    private String timestamp;
 
     private Integer merchantID;
 

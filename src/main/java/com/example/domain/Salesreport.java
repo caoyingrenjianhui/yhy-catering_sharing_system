@@ -2,7 +2,6 @@ package com.example.domain;
 
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDate;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import lombok.Data;
@@ -31,7 +30,7 @@ public class Salesreport implements Serializable {
 
     private Integer totalOrders;
 
-    private LocalDate reportDate;
+    private String reportDate;
 
 
 }

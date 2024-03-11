@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author 尹洪运
@@ -21,14 +21,26 @@ public class CategoryController {
 
     @Autowired
     private ICategoryService categoryService;
+
     @PostMapping("/add")
-    public Result add(@RequestBody Category category){
+    public Result add(@RequestBody Category category) {
         return categoryService.add(category);
     }
 
     @GetMapping("/getAll")
-    public Result getAll(){
+    public Result getAll() {
         return categoryService.getAll();
     }
+
+    @GetMapping("/delete/{categoryID}")
+    public Result delete(@PathVariable Integer categoryID) {
+        return categoryService.delete(categoryID);
+    }
+
+    @PostMapping("/update")
+    public Result update(@RequestBody Category category) {
+        return categoryService.update(category);
+    }
+
 }
 

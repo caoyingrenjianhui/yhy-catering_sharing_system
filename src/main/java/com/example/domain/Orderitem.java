@@ -2,7 +2,6 @@ package com.example.domain;
 
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
@@ -34,7 +33,7 @@ public class Orderitem implements Serializable {
 
     private String status;
 
-    private LocalDateTime timestamp;
+    private String timestamp;
 
     private String payType;
 
