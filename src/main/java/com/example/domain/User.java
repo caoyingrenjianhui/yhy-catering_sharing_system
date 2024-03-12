@@ -53,4 +53,13 @@ public class User implements Serializable {
     @TableField(exist = false)
     private String rePassword;
 
+    @TableField(exist = false)
+    private String userLat;//精度
+
+    @TableField(exist = false)
+    private String userLng;//维度
+
+    @TableField(exist = false)
+    private String maxDistance;//最大距离
+
 }

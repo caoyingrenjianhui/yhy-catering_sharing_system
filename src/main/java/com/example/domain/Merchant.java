@@ -33,13 +33,13 @@ public class Merchant implements Serializable {
 
     private String address;
 
-    private String approvalStatus;
+    private String approvalStatus;//审批状态
 
     private Integer userID;
 
-    private BigDecimal longitude;
+    private BigDecimal longitude;//经度
 
-    private BigDecimal latitude;
+    private BigDecimal latitude;//纬度
 
     @TableLogic
     private Integer isdel;

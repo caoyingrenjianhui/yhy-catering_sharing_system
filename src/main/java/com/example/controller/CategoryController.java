@@ -32,7 +32,7 @@ public class CategoryController {
         return categoryService.getAll();
     }
 
-    @GetMapping("/delete/{categoryID}")
+    @DeleteMapping("/delete/{categoryID}")
     public Result delete(@PathVariable Integer categoryID) {
         return categoryService.delete(categoryID);
     }
