@@ -2,6 +2,7 @@ package com.example.domain;
 
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
@@ -38,5 +39,10 @@ public class Dish implements Serializable {
 
     private String photo;
 
+    @TableField(value = "userID")
+    private String userID;
 
+    private String createTime;
+
+    private String modifyTime;
 }

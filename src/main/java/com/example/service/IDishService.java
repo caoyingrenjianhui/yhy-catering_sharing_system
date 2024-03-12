@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.controller.Result;
 import com.example.domain.Dish;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IDishService extends IService<Dish> {
 
+    Result add(Dish dish);
+
+    Result update(Dish dish);
 }
