@@ -2,6 +2,7 @@ package com.example.domain;
 
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
@@ -25,7 +26,8 @@ public class Orderitem implements Serializable {
     @TableId(value = "orderID", type = IdType.AUTO)
     private Integer orderID;
 
-    private Integer userID;
+    @TableField(value = "userID")
+    private String userID;
 
     private Integer merchantID;
 
@@ -33,7 +35,9 @@ public class Orderitem implements Serializable {
 
     private String status;
 
-    private String timestamp;
+    private String createTime;
+
+    private String modifyTime;
 
     private String payType;
 

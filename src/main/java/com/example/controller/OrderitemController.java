@@ -1,9 +1,10 @@
 package com.example.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import com.example.domain.Orderitem;
+import com.example.service.IOrderitemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -17,5 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/orderitem")
 public class OrderitemController {
 
+    @Autowired
+    private IOrderitemService orderitemService;
+
+    @PostMapping("/add")
+    public Result add(@RequestBody Orderitem orderitem){
+        return orderitemService.add(orderitem);
+    }
+
+    @PutMapping("/finish/{id}")
+    public Result finish(@PathVariable Integer id){
+        return orderitemService.finish(id);
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.controller.Result;
 import com.example.domain.Orderitem;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IOrderitemService extends IService<Orderitem> {
 
+    Result add(Orderitem orderitem);
+
+    Result finish(Integer id);
 }
