@@ -28,7 +28,7 @@ public class Comment implements Serializable {
 
     private Integer dishID;
 
-    private Integer rating;
+    private Integer rating;//等级
 
     private String content;
 
