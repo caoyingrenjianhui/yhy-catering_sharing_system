@@ -1,10 +1,16 @@
 package com.example.service.impl;
 
+import com.example.controller.Code;
+import com.example.controller.Result;
 import com.example.domain.Comment;
 import com.example.dao.CommentDao;
 import com.example.service.ICommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.utils.ThreadLocalUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -17,4 +23,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> implements ICommentService {
 
+    @Autowired
+    private CommentDao commentDao;
+
+    @Override
+    public Result add(Comment comment) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        int insert = commentDao.insert(comment);
+        if (insert == 0) {
+            return new Result(null, Code.SAVE_ERR,"新增失败");
+        }
+        return new Result(comment,Code.SAVE_OK,"新增成功");
+    }
 }
