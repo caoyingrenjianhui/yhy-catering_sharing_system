@@ -3,12 +3,9 @@ package com.example.controller;
 
 import com.example.domain.Comment;
 import com.example.service.ICommentService;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -28,6 +25,16 @@ public class CommentController {
     @PostMapping("/add")
     public Result add(@RequestBody Comment comment) {
         return commentService.add(comment);
+    }
+
+    @GetMapping
+    public Result selectByUserID(){
+        return commentService.selectBuUserID();
+    }
+
+    @DeleteMapping("/{id}")
+    public Result deleteById(@PathVariable Integer id){
+        return commentService.deleteById(id);
     }
 }
 

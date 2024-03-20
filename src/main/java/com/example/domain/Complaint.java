@@ -24,7 +24,7 @@ public class Complaint implements Serializable {
     @TableId(value = "complaintID", type = IdType.AUTO)
     private Integer complaintID;
 
-    private Integer userID;
+    private String userID;
 
     private Integer merchantID;
 
@@ -33,6 +33,8 @@ public class Complaint implements Serializable {
     private String timestamp;
 
     private String status;
+
+    private String handleID;
 
     @TableLogic
     private Integer isdel;
