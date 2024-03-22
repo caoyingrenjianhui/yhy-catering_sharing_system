@@ -27,9 +27,24 @@ public class ComplaintController {
         return complaintService.add(complaint);
     }
 
+    /**
+     * 处理投诉
+     * @param id
+     * @return
+     */
     @PutMapping("/handle/{id}")
     public Result handle(@PathVariable Integer id){
         return complaintService.handle(id);
+    }
+
+    /**
+     * 删除投诉
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/delete/{id}")
+    public Result delete(@PathVariable Integer id){
+        return complaintService.delete(id);
     }
 }
 

@@ -31,7 +31,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintDao, Complaint> i
     public Result add(Complaint complaint) {
         Map<String, Object> map = ThreadLocalUtil.get();
         complaint.setUserID((String) map.get("userID"));
-        complaint.setTimestamp(LocalDate.now().toString());
+        complaint.setCreateTime(LocalDate.now().toString());
         int insert = complaintDao.insert(complaint);
         if (insert == 0) {
             return new Result(null, Code.SAVE_ERR, "新增失败");
@@ -49,5 +49,18 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintDao, Complaint> i
             return new Result(null, Code.UPDATE_ERR, "修改失败");
         }
         return new Result(complaint, Code.UPDATE_OK, "修改成功");
+    }
+
+    @Override
+    public Result delete(Integer id) {
+        Complaint complaint = complaintDao.selectById(id);
+        complaint.setModifyTime(LocalDate.now().toString());
+        complaint.setIsdel(0);
+        int i = complaintDao.updateById(complaint);
+        if (i != 0) {
+            return new Result(null, Code.DELETE_OK, "删除成功");
+        } else {
+            return new Result(null, Code.DELETE_ERR, "删除失败");
+        }
     }
 }

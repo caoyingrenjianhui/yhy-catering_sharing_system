@@ -30,7 +30,9 @@ public class Complaint implements Serializable {
 
     private String content;
 
-    private String timestamp;
+    private String createTime;
+
+    private String modifyTime;
 
     private String status;
 

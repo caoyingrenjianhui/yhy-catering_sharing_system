@@ -17,4 +17,6 @@ public interface IComplaintService extends IService<Complaint> {
     Result add(Complaint complaint);
 
     Result handle(Integer id);
+
+    Result delete(Integer id);
 }
