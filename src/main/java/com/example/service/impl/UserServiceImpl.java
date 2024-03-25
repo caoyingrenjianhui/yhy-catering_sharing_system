@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -34,9 +33,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 
     @Autowired
     private UserDao userDao;
-
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public Result register(User user) {
@@ -82,9 +78,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
         claims.put("userID", user.getUserID());
         claims.put("username", user.getUsername());
         String token = JwtUtil.genToken(claims);
-//        把token存储到redis中
-        ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-        opsForValue.set(token,token,1, TimeUnit.HOURS);
         return new Result(token, Code.GET_OK, "登录成功");
     }
 
@@ -125,9 +118,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
         User selectById = userDao.selectById(userID);
         if (selectById.getPassword().equals(Md5Util.getMD5String(user.getOldPassword()))) {
             userDao.updatePassword(Md5Util.getMD5String(user.getPassword()), userID);
-//            删除redis中的token
-            ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-            opsForValue.getOperations().delete(token);
             return new Result(user, Code.UPDATE_OK, "密码修改成功");
         } else {
             return new Result(null, Code.UPDATE_ERR, "原密码不正确");
