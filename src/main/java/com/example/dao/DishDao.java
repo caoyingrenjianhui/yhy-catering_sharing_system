@@ -3,10 +3,13 @@ package com.example.dao;
 import com.example.domain.Dish;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author 尹洪运
@@ -15,4 +18,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface DishDao extends BaseMapper<Dish> {
 
+    @Select("select * from dish")
+    List<Dish> getAll();
+
+    @Select("select * from dish where merchantID = #{id}")
+    List<Dish> getByMerchant(Integer id);
 }

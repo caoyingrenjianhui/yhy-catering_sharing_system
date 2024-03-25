@@ -4,11 +4,7 @@ package com.example.controller;
 import com.example.domain.Dish;
 import com.example.service.IDishService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -33,6 +29,21 @@ public class DishController {
     @PostMapping("/update")
     public Result update(@RequestBody Dish dish){
         return dishService.update(dish);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public Result delete(@PathVariable Integer id){
+        return dishService.delete(id);
+    }
+
+    @GetMapping("/getAll")
+    public Result getAll() {
+        return dishService.getAll();
+    }
+
+    @GetMapping("/getByMerchant/{id}")
+    public Result getByMerchant(@PathVariable Integer id) {
+        return dishService.getByMerchant(id);
     }
 }
 

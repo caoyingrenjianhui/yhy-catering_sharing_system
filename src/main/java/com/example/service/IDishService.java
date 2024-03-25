@@ -17,4 +17,10 @@ public interface IDishService extends IService<Dish> {
     Result add(Dish dish);
 
     Result update(Dish dish);
+
+    Result delete(Integer id);
+
+    Result getAll();
+
+    Result getByMerchant(Integer id);
 }

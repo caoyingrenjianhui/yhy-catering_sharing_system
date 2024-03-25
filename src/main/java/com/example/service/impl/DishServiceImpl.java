@@ -2,6 +2,8 @@ package com.example.service.impl;
 
 import com.example.controller.Code;
 import com.example.controller.Result;
+import com.example.domain.Category;
+import com.example.domain.Complaint;
 import com.example.domain.Dish;
 import com.example.dao.DishDao;
 import com.example.service.IDishService;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,5 +50,30 @@ public class DishServiceImpl extends ServiceImpl<DishDao, Dish> implements IDish
             return new Result(null, Code.UPDATE_ERR, "修改失败");
         }
         return new Result(dish, Code.UPDATE_OK, "修改成功");
+    }
+
+    @Override
+    public Result delete(Integer id) {
+        Dish dish = dishDao.selectById(id);
+        dish.setModifyTime(LocalDate.now().toString());
+        dish.setIsdel(0);
+        int i = dishDao.updateById(dish);
+        if (i != 0) {
+            return new Result(null, Code.DELETE_OK, "删除成功");
+        } else {
+            return new Result(null, Code.DELETE_ERR, "删除失败");
+        }
+    }
+
+    @Override
+    public Result getAll() {
+        List<Dish> list = dishDao.getAll();
+        return new Result(list, Code.GET_OK, "查询成功");
+    }
+
+    @Override
+    public Result getByMerchant(Integer id) {
+        List<Dish> list = dishDao.getByMerchant(id);
+        return new Result(list, Code.GET_OK, "查询成功");
     }
 }
