@@ -18,6 +18,7 @@ import java.util.List;
  *
  * @author 尹洪运
  * @since 2024-02-29
+ * 商家
  */
 @RestController
 @RequestMapping("/merchant")
