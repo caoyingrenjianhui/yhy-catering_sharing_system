@@ -105,7 +105,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     }
 
     @Override
-    public Result updatePassword(User user,String token) {
+    public Result updatePassword(User user, String token) {
         if (!StringUtils.hasLength(user.getPassword())
                 || !StringUtils.hasLength(user.getOldPassword())
                 || !StringUtils.hasLength(user.getRePassword())) {
@@ -122,5 +122,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
         } else {
             return new Result(null, Code.UPDATE_ERR, "原密码不正确");
         }
+    }
+
+    @Override
+    public void upphoto(User user) {
+        userDao.updatePhoto(user.getPhoto(), user.getUserID());
     }
 }

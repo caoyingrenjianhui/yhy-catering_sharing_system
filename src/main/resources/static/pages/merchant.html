@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>我的信息</title>
+    <title>商家列表</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800&display=swap" rel="stylesheet">
 
@@ -15,27 +15,27 @@
 </head>
 
 <body>
-<div id="home">
+<div id="app">
     <header id="site-header" class="fixed-top">
         <section class="w3l-header-4">
             <div class="container">
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <h1><a class="navbar-brand" href="index.html">
-                        <span>餐饮分享系统</span>
+                        <span>Food</span>yuppie
                     </a></h1>
                     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
-                            data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                            aria-label="Toggle navigation">
+                            data-target="#navbarNav"
+                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="fa icon-expand fa-bars"></span>
                         <span class="fa icon-close fa-times"></span>
                     </button>
 
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav mx-lg-auto">
-                            <li class="nav-item active">
+                            <li class="nav-item">
                                 <a class="nav-link" href="index.html">Home </a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item active">
                                 <a class="nav-link" href="merchant.html">About</a>
                             </li>
                             <li class="nav-item">
@@ -48,15 +48,12 @@
                         <ul class="navbar-nav search-right mt-lg-0 mt-2">
                             <li class="nav-item mr-3" title="Search"><a href="#search" class="btn search-search">
                                 <span class="fa fa-search" aria-hidden="true"></span></a></li>
-                            <li class="nav-item"><a href="login.html"
+                            <li class="nav-item"><a href="tel:+(12)234-11-24"
                                                     class="btn btn-primary btn-style d-none d-lg-block btn-style mr-2"><span
-                                    class="fa fa-phone mr-3" aria-hidden="true"></span> 登录 </a>
+                                    class="fa fa-phone mr-3"
+                                    aria-hidden="true"></span> (32)234-14-94</a>
                             </li>
                         </ul>
-                        <ul>
-                            <li><a href="information.html" class="nav-link" id="username"></a></li>
-                        </ul>
-
                         <!-- //toggle switch for light and dark theme -->
                         <!-- search popup -->
                         <div id="search" class="pop-overlay">
@@ -90,147 +87,83 @@
         </section>
     </header>
 
-
-    <section class="w3l-products py-5" id="projects">
-        <div class="container py-lg-3">
-            <el-form style="margin-top: 100px; margin-left: 350px;" :model="user" :inline="true" align="center">
-
-                <el-form-item label="头像">
-                    <el-avatar :src="user.photo" :size="80" shape="circle"></el-avatar>
-                </el-form-item>
-                <el-form-item label="姓名">
-                    <el-input v-model="user.username" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item label="电话">
-                    <el-input v-model="user.phone" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item label="邮箱">
-                    <el-input v-model="user.email" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item label="地址">
-                    <el-input v-model="user.address" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item>
-                    <el-button v-if="!editing" type="primary" @click="toggleEditing">修改信息</el-button>
-                    <el-button v-else type="primary" @click="updateUser">保存</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="visible=true">修改头像</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
-                </el-form-item>
-            </el-form>
-            <!--修改密码-->
-            <el-dialog title="修改密码" :visible.sync="changePasswordDialogVisible">
-                <el-form ref="passwordForm" label-width="100px">
-                    <el-form-item label="原密码" prop="oldPassword">
-                        <el-input type="password" v-model="user.oldPassword"></el-input>
-                    </el-form-item>
-                    <el-form-item label="新密码" prop="newPassword">
-                        <el-input type="password" v-model="user.password"></el-input>
-                    </el-form-item>
-                    <el-form-item label="重复密码" prop="confirmPassword">
-                        <el-input type="password" v-model="user.rePassword"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="changePasswordDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="changePassword">确认修改</el-button>
-                </div>
-            </el-dialog>
-            <!--上传图片-->
-            <template>
-                <div>
-                    <el-dialog
-                            title="修改头像"
-                            :visible.sync="visible"
-                            width="30%"
-                    >
-                        <el-form ref="uploadForm" :model="uploadForm" action="/users/upload" method="post" enctype="multipart/form-data">
-                            <el-form-item label="选择图片">
-                                <input type="file" name="photo" @change="handleFileChange">
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" @click="submitUpload">上传</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </el-dialog>
-                </div>
-            </template>
+    <section class="w3l-about-breadcrumb text-left">
+        <div class="breadcrumb-bg breadcrumb-bg-about py-3">
+            <div class="container grid-breadcrumb">
+                <ul class="breadcrumbs-custom-path mt-md-2">
+                    <li><a href="index.html">主页</a></li>
+                    <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span>商家列表</li>
+                </ul>
+            </div>
         </div>
     </section>
+    <!--搜索表单-->
+    <el-form :inline="true" :model="merchant" class="demo-form-inline" style="margin-left: 20px">
+        <el-form-item label="根据商家ID搜索">
+            <el-input v-model="merchant.merchantID" placeholder="商家ID"></el-input>
+        </el-form-item>
+        <el-form-item label="商家名称">
+            <el-input v-model="merchant.merchantName" placeholder="商家名称"></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="onReset">重置</el-button>
+            <el-button type="primary" data-toggle="modal" data-target="#add" @click="beforeAdd" v-if="userType==1">
+                新增
+            </el-button>
+            <el-button type="primary" @click="getLocation">获取位置并查询附近商家</el-button> <!-- 添加获取位置按钮 -->
+        </el-form-item>
+    </el-form>
+    <!--商家列表-->
+    <template>
+        <div>
+            <el-table
+                    :data="merchants"
+                    style="width: 100%">
+                <el-table-column
+                        prop="photo"
+                        label="商家头像"
+                        align="center">
+                    <template slot-scope="scope">
+                        <img
+                                :src="scope.row.photo"
+                                alt="商家头像"
+                                style="width: 50px; height: 50px; border-radius: 50%;">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="merchantName"
+                        label="商家名称"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="phone"
+                        label="电话"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        label="地址"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        label="操作">
+                    <template slot-scope="scope">
+                        <el-button
+                                type="primary"
+                                @click="checkMerchant(scope.row)">
+                            查看商家菜品
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </template>
+
 </div>
-<script>
-    // When the user scrolls down 20px from the top of the document, show the button
-    window.onscroll = function () {
-        scrollFunction()
-    };
-
-    function scrollFunction() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            document.getElementById("movetop").style.display = "block";
-        } else {
-            document.getElementById("movetop").style.display = "none";
-        }
-    }
-
-    // When the user clicks on the button, scroll to the top of the document
-    function topFunction() {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-    }
-</script>
-
 <script src="../assets/js/jquery-3.3.1.min.js"></script>
 <script src="../assets/js/theme-change.js"></script>
-<script src="../assets/js/jquery-1.9.1.min.js"></script>
-
-<script src="../assets/js/easyResponsiveTabs.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        //Horizontal Tab
-        $('#parentHorizontalTab').easyResponsiveTabs({
-            type: 'default', //Types: default, vertical, accordion
-            width: 'auto', //auto or any width like 600px
-            fit: true, // 100% fit in a container
-            tabidentify: 'hor_1', // The tab groups identifier
-            activate: function (event) { // Callback function if tab is switched
-                var $tab = $(this);
-                var $info = $('#nested-tabInfo');
-                var $name = $('span', $info);
-                $name.text($tab.text());
-                $info.show();
-            }
-        });
-    });
-</script>
-<script src="../assets/js/owl.carousel.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#owl-demo1").owlCarousel({
-            loop: true,
-            margin: 20,
-            nav: false,
-            responsiveClass: true,
-            responsive: {
-                0: {
-                    items: 1,
-                    nav: false
-                },
-                1000: {
-                    items: 1,
-                    nav: false,
-                    loop: false
-                }
-            }
-        })
-    })
-</script>
 <script>
     $(window).on("scroll", function () {
         var scroll = $(window).scrollTop();
@@ -264,28 +197,47 @@
         })
     });
 </script>
-<script>
-    // 从 localStorage 中获取用户名
-    const username = localStorage.getItem('name');
-    console.log(localStorage.getItem('name'))
-    // 显示用户名在页面上
-    if (username != null) {
-        document.getElementById('username').textContent = username;
-    } else {
-        document.getElementById('username').textContent = 'Guest';
-    }
-</script>
-<script src="../js/bootstrap.js"></script>
-<script src="../js/jquery-2.2.3.min.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
 <script src="../js/vue.js"></script>
 <script src="../element-ui/lib/index.js"></script>
 <link rel="stylesheet" href="../element-ui/lib/theme-chalk/index.css">
 <script src="../js/axios-0.18.0.js"></script>
-
 <script>
     new Vue({
-        el: "#home",
+        el: "#app",
         methods: {
+            /*获取定位*/
+            getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        position => {
+                            // 获取成功时将地理位置信息存储在userLocation中
+                            this.user = {
+                                userLat: position.coords.latitude,
+                                userLng: position.coords.longitude
+                            };
+                            console.log(this.userLocation)
+                        },
+                        error => {
+                            console.error('获取位置失败:', error);
+                        }
+                    );
+                } else {
+                    console.error('浏览器不支持地理定位');
+                }
+                /*查询附近商家*/
+                let _this = this
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:9080/merchant/searchNearbyMerchants',
+                    data: this.user,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    _this.merchants = response.data.data
+                });
+            },
             hideModel() {
                 $('#add').modal('hide');
                 $('#appointment').modal('hide');
@@ -404,22 +356,37 @@
             return {
                 userType: localStorage.getItem('userType'),
                 userId: localStorage.getItem('userID'),
-                editing: false,
-                changePasswordDialogVisible: false,
-                visible:false,
-                availableDates: [], // 存储可用的预约日期
                 user: {
-                    userID: '',
-                    username: '',
+                    userLat: '',
+                    userLng: ''
+                },
+                userLocation: null,// 用于存储用户地理位置信息
+                merchant: {
+                    merchantID: '',
+                    merchantName: '',
+                    email: '',
                     phone: '',
                     address: '',
-                    email: '',
-                    password: '',
-                    oldPassword: '',
-                    rePassword: '',
-                    createTime: '',
-                    modifyTime: ''
+                    approvalStatus: '',
+                    userID: '',
+                    longitude: '',
+                    latitude: '',
+                    isdel: '',
+                    photo: ''
                 },
+                merchants: [{
+                    merchantID: '',
+                    merchantName: '',
+                    email: '',
+                    phone: '',
+                    address: '',
+                    approvalStatus: '',
+                    userID: '',
+                    longitude: '',
+                    latitude: '',
+                    isdel: '',
+                    photo: ''
+                }],
                 appointments: [],
                 appointment: {
                     doctorID: '',
