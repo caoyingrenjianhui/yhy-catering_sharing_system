@@ -1,9 +1,11 @@
 package com.example.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.controller.Code;
 import com.example.controller.Result;
 import com.example.dao.CategoryDao;
 import com.example.domain.Category;
+import com.example.domain.Merchant;
 import com.example.service.ICategoryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.utils.ThreadLocalUtil;
@@ -73,6 +75,5 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
         categoryDao.updateById(selectById);
         return new Result(selectById, Code.UPDATE_OK, "修改成功");
     }
-
 
 }

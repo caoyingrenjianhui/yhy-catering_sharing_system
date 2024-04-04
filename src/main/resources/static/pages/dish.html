@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>商家菜品</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800&display=swap" rel="stylesheet">
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="../assets/css/style-starter.css">
+</head>
+
+<body>
+<div id="app">
+    <header id="site-header" class="fixed-top">
+        <section class="w3l-header-4">
+            <div class="container">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <h1><a class="navbar-brand" href="index.html">
+                        <span>餐饮分享系统</span>
+                    </a></h1>
+                    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
+                            data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="fa icon-expand fa-bars"></span>
+                        <span class="fa icon-close fa-times"></span>
+                    </button>
+                </nav>
+            </div>
+        </section>
+    </header>
+    <section class="w3l-about-breadcrumb text-left">
+        <div class="breadcrumb-bg breadcrumb-bg-about py-3">
+            <div class="container grid-breadcrumb">
+                <ul class="breadcrumbs-custom-path mt-md-2">
+                    <li><a href="index.html">主页</a></li>
+                    <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span><a a
+                                                                                                                href="merchant.html">商家列表</a>
+                    </li>
+                    <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span>菜品列表</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!--搜索表单-->
+    <el-form :inline="true" :model="dish" class="demo-form-inline" style="margin-left: 20px">
+        <el-form-item label="根据菜品ID搜索">
+            <el-input v-model="dish.dishID" placeholder="菜品ID"></el-input>
+        </el-form-item>
+        <el-form-item label="菜品名称">
+            <el-input v-model="dish.dishName" placeholder="菜品名称"></el-input>
+        </el-form-item>
+        <el-form-item label="菜品类别">
+            <el-select v-model="dish.categoryID" placeholder="请选择菜品类别">
+                <el-option
+                        v-for="category in categorys"
+                        :key="category.categoryID"
+                        :label="category.categoryName"
+                        :value="category.categoryID">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="onReset">重置</el-button>
+            <el-button type="primary" data-toggle="modal" data-target="#add" @click="beforeAdd" v-if="userType==1">
+                新增
+            </el-button>
+        </el-form-item>
+    </el-form>
+    <!--菜品列表-->
+    <template>
+        <div>
+            <el-table
+                    :data="dishes"
+                    style="width: 100%">
+                <el-table-column
+                        prop="photo"
+                        label="图片"
+                        align="center">
+                    <template slot-scope="scope">
+                        <img
+                                :src="scope.row.photo"
+                                alt="头像"
+                                style="width: 50px; height: 50px; border-radius: 50%;">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="dishName"
+                        label="名称"
+                        align="center">
+                </el-table-column>
+                <el-table-column prop="categoryID" label="分类" align="center">
+                    <template slot-scope="scope">
+                        {{ getCategoryName(scope.row.categoryID) }}
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="price"
+                        label="价格"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="primary" @click="visible=true">修改图片</el-button>
+                        <el-button type="primary" data-toggle="modal" data-target="#add"
+                                   @click="beforeUpdate(scope.row)">编辑
+                        </el-button>
+                        <br><br>
+                        <el-button type="primary" @click="deleteDish(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </template>
+
+    <!--新增,编辑-->
+    <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" v-if="updateFlag==0">新增</h5>
+                    <h5 class="modal-title" v-else>编辑</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">名称</label>
+                        <input type="text" class="form-control" v-model="dish.dishName" placeholder=" "
+                               name="Password"
+                               required="">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">分类</label>
+                        <el-select v-model="dish.categoryID" placeholder="请选择菜品类别">
+                            <el-option
+                                    v-for="category in categorys"
+                                    :key="category.categoryID"
+                                    :label="category.categoryName"
+                                    :value="category.categoryID">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">价格</label>
+                        <input type="number" class="form-control" v-model="dish.price"
+                               placeholder=" "
+                               required="">
+                    </div>
+                    <div class="right-w3l">
+                        <input @click="addDish" type="submit" class="form-control" value="确定">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--修改图片-->
+    <template>
+        <div>
+            <el-dialog
+                    title="修改图片"
+                    :visible.sync="visible"
+                    width="30%"
+            >
+                <el-form ref="uploadForm" :model="uploadForm" action="/dish/upload" method="post" enctype="multipart/form-data">
+                    <el-form-item label="选择图片">
+                        <input type="file" name="photo" @change="handleFileChange">
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitUpload">上传</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+        </div>
+    </template>
+</div>
+<script src="../assets/js/jquery-3.3.1.min.js"></script>
+<script src="../assets/js/theme-change.js"></script>
+<script>
+    $(window).on("scroll", function () {
+        var scroll = $(window).scrollTop();
+
+        if (scroll >= 80) {
+            $("#site-header").addClass("nav-fixed");
+        } else {
+            $("#site-header").removeClass("nav-fixed");
+        }
+    });
+
+    //Main navigation Active Class Add Remove
+    $(".navbar-toggler").on("click", function () {
+        $("header").toggleClass("active");
+    });
+    $(document).on("ready", function () {
+        if ($(window).width() > 991) {
+            $("header").removeClass("active");
+        }
+        $(window).on("resize", function () {
+            if ($(window).width() > 991) {
+                $("header").removeClass("active");
+            }
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $('.navbar-toggler').click(function () {
+            $('body').toggleClass('noscroll');
+        })
+    });
+</script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="../element-ui/lib/theme-chalk/index.css">
+<script src="../js/axios-0.18.0.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        methods: {
+            hideModel() {
+                $('#add').modal('hide');
+                $('#appointment').modal('hide');
+            },
+            // 查询方法
+            onSubmit() {
+                let _this = this
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:9080/dish/select',
+                    data: this.dish,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20041) {
+                        _this.dishes = response.data.data;
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
+            //重置查询
+            onReset() {
+                this.beforeAdd()
+                this.onSubmit()
+            },
+            beforeAdd() {
+                this.updateFlag = 0
+                this.dish.dishID = null
+                this.dish.dishName = null
+                this.dish.price = null
+                this.dish.categoryID = null
+                this.dish.merchantID = null
+                this.dish.photo = null
+            },
+            addDish() {
+                let _this = this
+                if (_this.updateFlag == 1) {
+                    axios({
+                        method: 'put',
+                        url: 'http://localhost:9080/dish/update',
+                        data: this.dish,
+                        headers: { // 设置请求头
+                            Authorization: localStorage.getItem("token")
+                        }
+                    }).then(function (response) {
+                        if (response.data.code == 20031) {
+                            _this.onReset()
+                        } else {
+                            alert(response.data.msg)
+                        }
+                    });
+                } else {
+                    axios({
+                        method: 'post',
+                        url: 'http://localhost:9080/dish/add',
+                        data: this.dish,
+                        headers: { // 设置请求头
+                            Authorization: localStorage.getItem("token")
+                        }
+                    }).then(function (response) {
+                        if (response.data.code == 20011) {
+                            _this.onReset()
+                        } else {
+                            alert(response.data.msg)
+                        }
+                    });
+                }
+                this.hideModel()
+            },
+            beforeUpdate(rowDate) {
+                this.dish = rowDate
+                this.updateFlag = 1
+            },
+            deleteDish(rowDate) {
+                let _this = this
+                this.dish = rowDate
+                axios({
+                    method: 'delete',
+                    url: 'http://localhost:9080/merchant/delete/' + this.merchant.merchantID,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20021) {
+                        _this.onReset()
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
+            getCategoryName(categoryID) {
+                // 根据分类ID查找对应的分类名称
+                return this.categorys[categoryID] || '未知分类'; // 如果找不到对应的分类名称，则显示为'未知分类'
+            },
+        },
+        data() {
+            return {
+                merchantID: localStorage.getItem("merchantID"),
+                userType: localStorage.getItem('userType'),
+                userId: localStorage.getItem('userID'),
+                visible:false,
+                dish: {
+                    dishID: '',
+                    dishName: '',
+                    price: '',
+                    categoryID: '',
+                    merchantID: '',
+                    photo: '',
+                    userID: ''
+                },
+                dishes: [{
+                    dishID: '',
+                    dishName: '',
+                    price: '',
+                    categoryID: '',
+                    merchantID: '',
+                    photo: '',
+                    userID: ''
+                }],
+                categorys: [{
+                    categoryID: '',
+                    categoryName: '',
+                    userID: ''
+                }]
+            }
+        },
+        mounted: function () {
+            let _this = this;
+            axios({
+                method: 'get',
+                url: 'http://localhost:9080/dish/getByMerchant/' + merchantID,
+                headers: { // 设置请求头
+                    Authorization: localStorage.getItem("token")
+                }
+            }).then(function (response) {
+                _this.dishes = response.data.data
+            });
+            axios({
+                method: 'get',
+                url: 'http://localhost:9080/category/getAll',
+                headers: { // 设置请求头
+                    Authorization: localStorage.getItem("token")
+                }
+            }).then(function (response) {
+                _this.categorys = response.data.data
+            });
+        }
+    })
+</script>
+</body>
+
+</html>

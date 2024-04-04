@@ -2,7 +2,11 @@ package com.example.dao;
 
 import com.example.domain.Complaint;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.domain.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +19,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ComplaintDao extends BaseMapper<Complaint> {
 
+    @Select("select * from complaint")
+    List<User> getAll();
 }

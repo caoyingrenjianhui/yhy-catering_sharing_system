@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>管理投诉</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800&display=swap" rel="stylesheet">
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="../assets/css/style-starter.css">
+</head>
+
+<body>
+<div id="app">
+    <header id="site-header" class="fixed-top">
+        <section class="w3l-header-4">
+            <div class="container">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <h1><a class="navbar-brand" href="index.html">
+                        <span>餐饮分享系统</span>
+                    </a></h1>
+                    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
+                            data-target="#navbarNav"
+                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="fa icon-expand fa-bars"></span>
+                        <span class="fa icon-close fa-times"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-lg-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">Home </a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="merchant.html">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="services.html">Services</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="contact.html">Contact</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav search-right mt-lg-0 mt-2">
+                            <li class="nav-item mr-3" title="Search"><a href="#search" class="btn search-search">
+                                <span class="fa fa-search" aria-hidden="true"></span></a></li>
+                            <li class="nav-item"><a href="tel:+(12)234-11-24"
+                                                    class="btn btn-primary btn-style d-none d-lg-block btn-style mr-2"><span
+                                    class="fa fa-phone mr-3"
+                                    aria-hidden="true"></span> (32)234-14-94</a>
+                            </li>
+                        </ul>
+                        <div id="search" class="pop-overlay">
+                            <div class="popup">
+                                <form action="#" method="GET" class="d-sm-flex">
+                                    <input type="search" placeholder="Search.." name="search" required="required"
+                                           autofocus>
+                                    <button type="submit">Search</button>
+                                    <a class="close" href="#url">&times;</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </section>
+    </header>
+
+    <section class="w3l-about-breadcrumb text-left">
+        <div class="breadcrumb-bg breadcrumb-bg-about py-3">
+            <div class="container grid-breadcrumb">
+                <ul class="breadcrumbs-custom-path mt-md-2">
+                    <li><a href="index.html">主页</a></li>
+                    <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span>处理投诉</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!--搜索表单-->
+    <el-form :inline="true" :model="complaint" class="demo-form-inline" style="margin-left: 20px">
+        <el-form-item label="处理状态">
+            <el-select v-model="complaint.status" placeholder="状态">
+                <el-option label="已处理" value="1"></el-option>
+                <el-option label="未处理" value="0"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="onReset">重置</el-button>
+        </el-form-item>
+    </el-form>
+    <!--商家列表-->
+    <template>
+        <div>
+            <el-table
+                    :data="complaints"
+                    style="width: 100%">
+                <el-table-column
+                        prop="merchantID"
+                        label="商家ID"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="content"
+                        label="内容"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="status"
+                        label="状态"
+                        align="center">
+                    <template slot-scope="scope">
+                        <el-row v-if="scope.row.status==0">未处理</el-row>
+                        <el-row v-if="scope.row.status==1">已处理</el-row>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="primary" @click="handle(scope.row.complaintID)">已处理</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </template>
+
+</div>
+<script src="../assets/js/jquery-3.3.1.min.js"></script>
+<script src="../assets/js/theme-change.js"></script>
+<script>
+    $(window).on("scroll", function () {
+        var scroll = $(window).scrollTop();
+
+        if (scroll >= 80) {
+            $("#site-header").addClass("nav-fixed");
+        } else {
+            $("#site-header").removeClass("nav-fixed");
+        }
+    });
+
+    //Main navigation Active Class Add Remove
+    $(".navbar-toggler").on("click", function () {
+        $("header").toggleClass("active");
+    });
+    $(document).on("ready", function () {
+        if ($(window).width() > 991) {
+            $("header").removeClass("active");
+        }
+        $(window).on("resize", function () {
+            if ($(window).width() > 991) {
+                $("header").removeClass("active");
+            }
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $('.navbar-toggler').click(function () {
+            $('body').toggleClass('noscroll');
+        })
+    });
+</script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="../element-ui/lib/theme-chalk/index.css">
+<script src="../js/axios-0.18.0.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        methods: {
+            /*处理投诉*/
+            handle(complaintID) {
+                let _this = this
+                axios({
+                    method: 'put',
+                    url: 'http://localhost:9080/handle/' + complaintID,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20031) {
+                        _this.onReset();
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
+            hideModel() {
+                $('#add').modal('hide');
+                $('#appointment').modal('hide');
+            },
+            // 查询方法
+            onSubmit() {
+                let _this = this
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:9080/complaint/select',
+                    data: this.merchant,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20041) {
+                        _this.merchants = response.data.data;
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
+            //重置查询
+            onReset() {
+                this.beforeAdd()
+                this.onSubmit()
+            },
+            beforeAdd() {
+                this.updateFlag = 0
+                this.complaint.complaintID = null
+                this.complaint.userID = null
+                this.complaint.merchantID = null
+                this.complaint.merchantID = null
+                this.complaint.merchantID = null
+                this.complaint.modifyTime = null
+                this.complaint.status = null
+                this.complaint.handleID = null
+            },
+            beforeUpdate(rowDate) {
+                this.merchant = rowDate
+                this.updateFlag = 1
+            },
+            deleteMerchant(rowDate) {
+                let _this = this
+                this.merchant = rowDate
+                axios({
+                    method: 'delete',
+                    url: 'http://localhost:9080/merchant/delete/' + this.merchant.merchantID,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20021) {
+                        _this.onReset()
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            }
+        },
+        data() {
+            return {
+                userType: localStorage.getItem('userType'),
+                userId: localStorage.getItem('userID'),
+                updateFlag: 0,
+                visible: false,
+                userLocation: null,// 用于存储用户地理位置信息
+                complaint: {
+                    complaintID: '',
+                    userID: '',
+                    merchantID: '',
+                    merchantID: '',
+                    merchantID: '',
+                    modifyTime: '',
+                    status: '',
+                    handleID: ''
+                },
+                complaints: [{
+                    complaintID: '',
+                    userID: '',
+                    merchantID: '',
+                    merchantID: '',
+                    merchantID: '',
+                    modifyTime: '',
+                    status: '',
+                    handleID: ''
+                }],
+            }
+        },
+        mounted: function () {
+            let _this = this;
+            axios({
+                method: 'get',
+                url: 'http://localhost:9080/complaint/getAll',
+                headers: { // 设置请求头
+                    Authorization: localStorage.getItem("token")
+                }
+                // responseType: 'stream'
+            }).then(function (response) {
+                _this.complaints = response.data.data
+            });
+        }
+    })
+</script>
+</body>
+
+</html>
