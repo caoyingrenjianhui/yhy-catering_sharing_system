@@ -94,6 +94,9 @@
             <el-button type="primary" data-toggle="modal" data-target="#add" @click="beforeAdd" v-if="userType==2">
                 新增
             </el-button>
+            <el-button type="primary" data-toggle="modal" data-target="#complaint"
+                       @click="beforeAddComplaint(scope.row.merchantID)">投诉
+            </el-button>
             <el-button type="primary" @click="getLocation">获取位置并查询附近商家</el-button> <!-- 添加获取位置按钮 -->
         </el-form-item>
     </el-form>
@@ -193,6 +196,30 @@
                     </div>
                     <div class="right-w3l">
                         <input @click="addMerchant" type="submit" class="form-control" value="确定">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--投诉-->
+    <div class="modal fade" id="complaint" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">新增投诉</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">投诉内容</label>
+                        <input type="text" class="form-control" v-model="complaint.content" placeholder=" "
+                               required="">
+                    </div>
+                    <div class="right-w3l">
+                        <input @click="addComplaint" type="submit" class="form-control" value="确定">
                     </div>
                 </div>
             </div>
@@ -304,7 +331,7 @@
             },
             hideModel() {
                 $('#add').modal('hide');
-                $('#appointment').modal('hide');
+                $('#complaint').modal('hide');
             },
             // 查询方法
             onSubmit() {
@@ -341,6 +368,14 @@
                 this.merchant.longitude = null
                 this.merchant.latitude = null
                 this.updateFlag = 0
+                this.complaint.complaintID = null
+                this.complaint.userID = null
+                this.complaint.merchantID = null
+                this.complaint.content = null
+                this.complaint.createTime = null
+                this.complaint.modifyTime = null
+                this.complaint.status = null
+                this.complaint.handleI = null
             },
             addMerchant() {
                 let _this = this
@@ -416,6 +451,28 @@
                         alert(response.data.msg)
                     }
                 });
+            },
+            beforeAddComplaint(merchantID) {
+                this.complaint.merchantID = merchantID
+            },
+            /*增加投诉*/
+            addComplaint() {
+                let _this = this
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:9080/complaint/add',
+                    data: this.complaint,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20011) {
+                        _this.onReset()
+                        _this.hideModel()
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
             }
         },
         data() {
@@ -429,6 +486,16 @@
                     userLng: ''
                 },
                 userLocation: null,// 用于存储用户地理位置信息
+                complaint: {
+                    complaintID: '',
+                    userID: '',
+                    merchantID: '',
+                    content: '',
+                    createTime: '',
+                    modifyTime: '',
+                    status: '',
+                    handleID: ''
+                },
                 merchant: {
                     merchantID: '',
                     merchantName: '',
