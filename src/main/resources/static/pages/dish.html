@@ -70,6 +70,9 @@
             <el-button type="primary" data-toggle="modal" data-target="#add" @click="beforeAdd" v-if="userType==1">
                 新增
             </el-button>
+            <el-button type="primary" @click="dialogVisible=true">
+                下单
+            </el-button>
         </el-form-item>
     </el-form>
     <!--菜品列表-->
@@ -108,6 +111,7 @@
                         align="center"
                         label="操作">
                     <template slot-scope="scope">
+                        <el-button type="primary" @click="placeOrder(scope.row)">加入购物车</el-button>
                         <el-button type="primary" @click="visible=true">修改图片</el-button>
                         <el-button type="primary" data-toggle="modal" data-target="#add"
                                    @click="beforeUpdate(scope.row)">编辑
@@ -171,7 +175,8 @@
                     :visible.sync="visible"
                     width="30%"
             >
-                <el-form ref="uploadForm" :model="uploadForm" action="/dish/upload" method="post" enctype="multipart/form-data">
+                <el-form ref="uploadForm" :model="uploadForm" action="/dish/upload" method="post"
+                         enctype="multipart/form-data">
                     <el-form-item label="选择图片">
                         <input type="file" name="photo" @change="handleFileChange">
                     </el-form-item>
@@ -182,6 +187,20 @@
             </el-dialog>
         </div>
     </template>
+
+    <!-- 下单 -->
+    <el-dialog
+            title="已选商品"
+            :visible.sync="dialogVisible"
+            width="50%"
+    >
+        <!-- 在对话框中展示已选商品列表 -->
+        <el-card v-for="(dish, index) in selectedDishes" :key="index" :body-style="{ padding: '20px' }">
+            <p>商品名称：{{ dish.name }}</p>
+            <p>价格：{{ dish.price }}</p>
+            <!-- 其他商品信息 -->
+        </el-card>
+    </el-dialog>
 </div>
 <script src="../assets/js/jquery-3.3.1.min.js"></script>
 <script src="../assets/js/theme-change.js"></script>
@@ -227,6 +246,10 @@
     new Vue({
         el: "#app",
         methods: {
+            placeOrder(rowDate) {
+                //添加购物车
+                this.selectedDishes.push(rowDate)
+            },
             hideModel() {
                 $('#add').modal('hide');
                 $('#appointment').modal('hide');
@@ -329,7 +352,8 @@
                 merchantID: localStorage.getItem("merchantID"),
                 userType: localStorage.getItem('userType'),
                 userId: localStorage.getItem('userID'),
-                visible:false,
+                visible: false,
+                dialogVisible: false,
                 dish: {
                     dishID: '',
                     dishName: '',
@@ -339,6 +363,15 @@
                     photo: '',
                     userID: ''
                 },
+                selectedDishes: [{
+                    dishID: '',
+                    dishName: '',
+                    price: '',
+                    categoryID: '',
+                    merchantID: '',
+                    photo: '',
+                    userID: ''
+                }],
                 dishes: [{
                     dishID: '',
                     dishName: '',
