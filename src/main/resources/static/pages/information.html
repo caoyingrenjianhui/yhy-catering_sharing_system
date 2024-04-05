@@ -142,6 +142,8 @@
                             width="30%"
                     >
                         <el-form action="/user/upload" method="post" enctype="multipart/form-data">
+                            <!-- 添加隐藏的input字段来传递id的值 -->
+                            <input type="hidden" name="userID" :value="getUserID()"></input>
                             <input type="file" name="photo"></input><br><br>
                             <el-input type="submit"></el-input>
                         </el-form>
@@ -276,6 +278,9 @@
                 $('#add').modal('hide');
                 $('#appointment').modal('hide');
             },
+            getUserID() {
+                return localStorage.getItem("userID");
+            },
             toggleEditing() {
                 this.editing = !this.editing;
             },
@@ -392,7 +397,7 @@
                 userId: localStorage.getItem('userID'),
                 editing: false,
                 changePasswordDialogVisible: false,
-                visible:false,
+                visible: false,
                 availableDates: [], // 存储可用的预约日期
                 user: {
                     userID: '',

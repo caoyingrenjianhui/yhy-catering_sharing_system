@@ -75,13 +75,13 @@ public class UserController {
     }
 
     @PutMapping("updatePassword")
-    public Result updatePassword(@RequestBody User user,@RequestHeader("Authorization") String token){
-        return userService.updatePassword(user,token);
+    public Result updatePassword(@RequestBody User user, @RequestHeader("Authorization") String token) {
+        return userService.updatePassword(user, token);
     }
 
     //    上传头像
     @PostMapping("/upload")
-    public String up(MultipartFile photo, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String up(@RequestParam("userID") String userID, MultipartFile photo, HttpServletRequest request, HttpServletResponse response) throws IOException {
         //  获取图片的原始名称
         System.out.println("mingcheng:" + photo.getOriginalFilename());
 //        获取文件类型
@@ -96,12 +96,9 @@ public class UserController {
 //        页面路径
         String referer = request.getHeader("referer");
 //        获取偶用户id，组成user，更改头像
-        Map<String, Object> map = ThreadLocalUtil.get();
-        String userID = (String) map.get("userID");
-        //        判断是否登陆过
-        if (userID != null) {
+        if (userID != null || userID != "") {
             User user = new User();
-            user.setUserID((String) userID);
+            user.setUserID(userID);
             user.setPhoto(pic);
             userService.upphoto(user);
 //            不跳转页面
