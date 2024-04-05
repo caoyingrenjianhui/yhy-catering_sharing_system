@@ -1,0 +1,103 @@
+create table if not exists category
+(
+	categoryID int auto_increment
+		primary key,
+	categoryName varchar(100) null,
+	userID varchar(8) null,
+	create_time date null,
+	modify_time date null
+);
+
+create table if not exists comment
+(
+	commentID int auto_increment
+		primary key,
+	userID int null,
+	dishID int null,
+	rating int null,
+	content text null,
+	timestamp timestamp null,
+	merchantID int null,
+	reply int null,
+	isdel int default 0 null
+);
+
+create table if not exists complaint
+(
+	complaintID int auto_increment
+		primary key,
+	userID int null,
+	merchantID int null,
+	content text null,
+	timestamp timestamp null,
+	status varchar(50) default '0' null,
+	isdel int default 0 null
+);
+
+create table if not exists dish
+(
+	dishID int auto_increment
+		primary key,
+	dishName varchar(100) null,
+	price decimal(10,2) null,
+	categoryID int null,
+	merchantID int null,
+	isdel int default 0 null,
+	photo varchar(50) null
+);
+
+create table if not exists merchant
+(
+	merchantID int auto_increment
+		primary key,
+	merchantName varchar(100) null,
+	email varchar(100) null,
+	phone varchar(20) null,
+	address varchar(100) null,
+	approvalStatus varchar(50) null,
+	userID int null,
+	longitude decimal(10,6) null,
+	latitude decimal(10,6) null,
+	isdel int default 0 null,
+	photo varchar(50) null
+);
+
+create table if not exists orderitem
+(
+	orderID int auto_increment
+		primary key,
+	userID int null,
+	merchantID int null,
+	totalPrice decimal(10,2) null,
+	status varchar(50) null,
+	timestamp timestamp null,
+	payType varchar(50) null,
+	isdel int default 0 null
+);
+
+create table if not exists salesreport
+(
+	salesReportID int auto_increment
+		primary key,
+	merchantID int null,
+	totalSales decimal(10,2) null,
+	totalOrders int null,
+	reportDate date null
+);
+
+create table if not exists user
+(
+	userID varchar(8) not null
+		primary key,
+	username varchar(50) null,
+	password varchar(50) null,
+	email varchar(100) null,
+	phone varchar(20) null,
+	address varchar(100) null,
+	create_time date null,
+	modify_time date null,
+	user_type int null,
+	isdel int default 0 null,
+	photo varchar(50) null
+);
+
