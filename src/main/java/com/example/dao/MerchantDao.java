@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author 尹洪运
@@ -19,9 +19,9 @@ import java.util.List;
 @Mapper
 public interface MerchantDao extends BaseMapper<Merchant> {
 
-    @Select("select * from Merchant where isdel=0")
+    @Select("select * from Merchant where isdel=0 and approval_Status = 1")
     List<Merchant> getAll();
 
-    @Update("update Merchant set photo = #{photo}, modify_time = now() where userID = #{userID}")
-    void updatePhoto(String photo, String userID);
+    @Update("update Merchant set photo = #{photo} where merchantID = #{merchantID}")
+    void updatePhoto(String photo, Integer merchantID);
 }

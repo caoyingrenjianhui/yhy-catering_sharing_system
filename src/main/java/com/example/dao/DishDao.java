@@ -25,6 +25,6 @@ public interface DishDao extends BaseMapper<Dish> {
     @Select("select * from dish where merchantID = #{id}")
     List<Dish> getByMerchant(Integer id);
 
-    @Update("update dish set photo = #{photo}, modify_time = now() where userID = #{userID}")
-    void updatePhoto(String photo, String userID);
+    @Update("update dish set photo = #{photo} where dishID = #{dishID}")
+    void updatePhoto(String photo, Integer dishID);
 }

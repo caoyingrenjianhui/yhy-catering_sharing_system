@@ -35,7 +35,6 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintDao, Complaint> i
     public Result add(Complaint complaint) {
         Map<String, Object> map = ThreadLocalUtil.get();
         complaint.setUserID((String) map.get("userID"));
-        complaint.setCreateTime(LocalDate.now().toString());
         int insert = complaintDao.insert(complaint);
         if (insert == 0) {
             return new Result(null, Code.SAVE_ERR, "新增失败");
@@ -58,7 +57,6 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintDao, Complaint> i
     @Override
     public Result delete(Integer id) {
         Complaint complaint = complaintDao.selectById(id);
-        complaint.setModifyTime(LocalDate.now().toString());
         complaint.setIsdel(0);
         int i = complaintDao.updateById(complaint);
         if (i != 0) {
@@ -80,10 +78,19 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintDao, Complaint> i
         if (complaint.getStatus() != null) {
             wrapper.eq("status", complaint.getStatus());
         }
+        if (complaint.getUserID() != null) {
+            wrapper.eq("userID", complaint.getUserID());
+        }
         List<Complaint> list = complaintDao.selectList(wrapper);
         if (list == null) {
             return new Result(null, Code.GET_ERR, "查询不到数据");
         }
         return new Result(list, Code.GET_OK, "查询成功");
+    }
+
+    @Override
+    public Result update(Complaint complaint) {
+        complaintDao.updateById(complaint);
+        return new Result(complaint, Code.UPDATE_OK, "修改成功");
     }
 }

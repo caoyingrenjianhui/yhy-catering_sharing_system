@@ -56,17 +56,17 @@ public class MerchantController {
     }
 
     @DeleteMapping("/delete")
-    public Result delete(@PathVariable Integer id){
+    public Result delete(@PathVariable Integer id) {
         return merchantService.deleteById(id);
     }
 
     @PostMapping("/select")
-    public Result select(@RequestBody Merchant merchant){
+    public Result select(@RequestBody Merchant merchant) {
         return merchantService.select(merchant);
     }
 
     @PutMapping("/update")
-    public Result update(@RequestBody Merchant merchant){
+    public Result update(@RequestBody Merchant merchant) {
         return merchantService.update(merchant);
     }
 
@@ -75,9 +75,21 @@ public class MerchantController {
         return merchantService.getAll();
     }
 
+    /**
+     * 审核商家
+     *
+     * @param id
+     * @return
+     */
+    @PutMapping("/handle/{id}")
+    public Result handle(@PathVariable Integer id) {
+        return merchantService.handle(id);
+    }
+
+
     //    上传头像
     @PostMapping("/upload")
-    public String up(MultipartFile photo, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String up(@RequestParam("merchantID") String merchantID, MultipartFile photo, HttpServletRequest request, HttpServletResponse response) throws IOException {
         //  获取图片的原始名称
         System.out.println("mingcheng:" + photo.getOriginalFilename());
 //        获取文件类型
@@ -91,15 +103,11 @@ public class MerchantController {
         System.out.println("pic" + pic);
 //        页面路径
         String referer = request.getHeader("referer");
-//        获取偶用户id，组成user，更改头像
-        Map<String, Object> map = ThreadLocalUtil.get();
-        String userID = (String) map.get("userID");
-        //        判断是否登陆过
-        if (userID != null) {
-            User user = new User();
-            user.setUserID((String) userID);
-            user.setPhoto(pic);
-            merchantService.upphoto(user);
+        if (merchantID != null && merchantID != "") {
+            Merchant merchant = new Merchant();
+            merchant.setMerchantID(Integer.valueOf(merchantID));
+            merchant.setPhoto(pic);
+            merchantService.upphoto(merchant);
 //            不跳转页面
             response.sendRedirect(referer);
             return ("上传成功");

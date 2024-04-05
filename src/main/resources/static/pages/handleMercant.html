@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>管理投诉</title>
+    <title>审批商家</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800&display=swap" rel="stylesheet">
 
@@ -80,15 +80,15 @@
             <div class="container grid-breadcrumb">
                 <ul class="breadcrumbs-custom-path mt-md-2">
                     <li><a href="index.html">主页</a></li>
-                    <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span>处理投诉</li>
+                    <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span>审批商家</li>
                 </ul>
             </div>
         </div>
     </section>
     <!--搜索表单-->
-    <el-form :inline="true" :model="complaint" class="demo-form-inline" style="margin-left: 20px">
+    <el-form :inline="true" :model="merchant" class="demo-form-inline" style="margin-left: 20px">
         <el-form-item label="处理状态">
-            <el-select v-model="complaint.status" placeholder="状态">
+            <el-select v-model="merchant.approvalStatus" placeholder="状态">
                 <el-option label="已处理" value="1"></el-option>
                 <el-option label="未处理" value="0"></el-option>
             </el-select>
@@ -102,32 +102,52 @@
     <template>
         <div>
             <el-table
-                    :data="complaints"
+                    :data="merchants"
                     style="width: 100%">
                 <el-table-column
-                        prop="merchantID"
-                        label="商家ID"
-                        align="center">
-                </el-table-column>
-                <el-table-column
-                        prop="content"
-                        label="内容"
-                        align="center">
-                </el-table-column>
-                <el-table-column
-                        prop="status"
-                        label="状态"
+                        prop="photo"
+                        label="商家头像"
                         align="center">
                     <template slot-scope="scope">
-                        <el-row v-if="scope.row.status==0">未处理</el-row>
-                        <el-row v-if="scope.row.status==1">已处理</el-row>
+                        <img
+                                :src="scope.row.photo"
+                                alt="商家头像"
+                                style="width: 50px; height: 50px; border-radius: 50%;">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="merchantName"
+                        label="商家名称"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="phone"
+                        label="电话"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        label="地址"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="approvalStatus"
+                        label="审批状态"
+                        align="center">
+                    <template slot-scope="scope">
+                        <el-row v-if="scope.row.approvalStatus==0">未处理</el-row>
+                        <el-row v-if="scope.row.approvalStatus==1">已处理</el-row>
                     </template>
                 </el-table-column>
                 <el-table-column
                         align="center"
                         label="操作">
                     <template slot-scope="scope">
-                        <el-button type="primary" @click="handle(scope.row.complaintID)">已处理</el-button>
+                        <el-button
+                                type="primary"
+                                @click="checkMerchant(scope.row.merchantID)">
+                            审批通过
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -179,12 +199,12 @@
     new Vue({
         el: "#app",
         methods: {
-            /*处理投诉*/
+            /*审核商家*/
             handle(complaintID) {
                 let _this = this
                 axios({
                     method: 'put',
-                    url: 'http://localhost:9080/complaint/handle/' + complaintID,
+                    url: 'http://localhost:9080/merchant/handle/' + complaintID,
                     headers: { // 设置请求头
                         Authorization: localStorage.getItem("token")
                     }
@@ -198,14 +218,13 @@
             },
             hideModel() {
                 $('#add').modal('hide');
-                $('#appointment').modal('hide');
             },
             // 查询方法
             onSubmit() {
                 let _this = this
                 axios({
                     method: 'post',
-                    url: 'http://localhost:9080/complaint/select',
+                    url: 'http://localhost:9080/merchant/select',
                     data: this.merchant,
                     headers: { // 设置请求头
                         Authorization: localStorage.getItem("token")
@@ -234,27 +253,6 @@
                 this.complaint.status = null
                 this.complaint.handleID = null
             },
-            beforeUpdate(rowDate) {
-                this.merchant = rowDate
-                this.updateFlag = 1
-            },
-            deleteMerchant(rowDate) {
-                let _this = this
-                this.merchant = rowDate
-                axios({
-                    method: 'delete',
-                    url: 'http://localhost:9080/merchant/delete/' + this.merchant.merchantID,
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20021) {
-                        _this.onReset()
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
-            }
         },
         data() {
             return {

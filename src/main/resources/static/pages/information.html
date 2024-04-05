@@ -107,12 +107,18 @@
                 <el-form-item>
                     <el-button v-if="!editing" type="primary" @click="toggleEditing">修改信息</el-button>
                     <el-button v-else type="primary" @click="updateUser">保存</el-button>
+                    <br><br>
+                    <el-button @click="getMyComment()">查看我的评论</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="visible=true">修改头像</el-button>
+                    <br><br>
+                    <el-button @click="getMyComplaint()">查看我的投诉</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
+                    <br><br>
+                    <el-button @click="getMyOrder()">查看我的订单</el-button>
                 </el-form-item>
             </el-form>
             <!--修改密码-->
@@ -150,6 +156,157 @@
                     </el-dialog>
                 </div>
             </template>
+
+            <!--我的评论-->
+            <div>
+                <template>
+                    <el-table
+                            v-if="comments.length"
+                            :data="comments"
+                            style="width: 100%">
+                        <el-table-column
+                                prop="merchantID"
+                                label="商家ID"
+                                align="center">
+                        </el-table-column>
+                        <el-table-column
+                                prop="dishID"
+                                label="菜品ID"
+                                align="center">
+                        </el-table-column>
+                        <el-table-column
+                                prop="content"
+                                label="内容"
+                                align="center">
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                label="操作">
+                            <template slot-scope="scope">
+                                <!--                                <el-button type="primary" @click="beforeUpdate(scope.row)">修改</el-button>-->
+                                <el-button
+                                        type="primary"
+                                        @click="deleteComment(scope.row.commentID)">
+                                    删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+            </div>
+            <!--我的投诉-->
+            <div>
+                <template>
+                    <el-table
+                            v-if="complaints.length"
+                            :data="complaints"
+                            style="width: 100%">
+                        <el-table-column
+                                prop="merchantID"
+                                label="商家ID"
+                                align="center">
+                        </el-table-column>
+                        <el-table-column
+                                prop="content"
+                                label="内容"
+                                align="center">
+                        </el-table-column>
+                        <el-table-column
+                                prop="status"
+                                label="状态"
+                                align="center">
+                            <template slot-scope="scope">
+                                <el-row v-if="scope.row.status==0">未处理</el-row>
+                                <el-row v-if="scope.row.status==1">已处理</el-row>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                label="操作">
+                            <template slot-scope="scope">
+                                <el-button type="primary" @click="beforeUpdate(scope.row)">修改</el-button>
+                                <el-button
+                                        type="primary"
+                                        @click="delete(scope.row.complaintID)">
+                                    删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+                <template>
+                    <div>
+                        <el-dialog
+                                title="修改"
+                                :visible.sync="complaintVisible"
+                                width="30%"
+                        >
+                            <el-form>
+                                <input type="text" v-model="complaint.content"></input><br><br>
+                                <el-input @click="updateMyComplaint">提交</el-input>
+                            </el-form>
+                        </el-dialog>
+                    </div>
+                </template>
+            </div>
+            <!--我的订单-->
+            <div>
+                <template>
+                    <el-table
+                            v-if="orderitems.length"
+                            :data="orderitems"
+                            style="width: 100%">
+                        <el-table-column
+                                prop="dishID"
+                                label="菜品"
+                                align="center">
+                            <template slot-scope="scope">
+                                {{ getDishName(scope.row.dishID) }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="totalPrice"
+                                label="价格"
+                                align="center">
+                        </el-table-column>
+                        <el-table-column
+                                prop="status"
+                                label="状态"
+                                align="center">
+                            <template slot-scope="scope">
+                                <el-row v-if="scope.row.status==0">未处理</el-row>
+                                <el-row v-if="scope.row.status==1">已处理</el-row>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                label="操作">
+                            <template slot-scope="scope">
+                                <el-button type="primary" @click="beforeUpdate(scope.row)">修改</el-button>
+                                <el-button
+                                        type="primary"
+                                        @click="delete(scope.row.complaintID)">
+                                    删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+                <template>
+                    <div>
+                        <el-dialog
+                                title="修改"
+                                :visible.sync="complaintVisible"
+                                width="30%"
+                        >
+                            <el-form>
+                                <input type="text" v-model="complaint.content"></input><br><br>
+                                <el-input @click="updateMyComplaint">提交</el-input>
+                            </el-form>
+                        </el-dialog>
+                    </div>
+                </template>
+            </div>
         </div>
     </section>
 </div>
@@ -274,6 +431,50 @@
     new Vue({
         el: "#home",
         methods: {
+            getDishName(dishID) {
+                let dishNames = "";
+                for (let i = 0; i < this.dishes.length; i++) {
+                    if (this.dishes[i].dishID === dishID) {
+                        dishNames += this.dishes[i].dishName + ";"; // 将找到的菜品名称拼接到字符串中
+                    }
+                }
+                if (dishNames !== "") {
+                    dishNames = dishNames.substring(0, dishNames.length - 1);
+                }
+                this.orderitem.dishID = dishNames
+            },
+            getMyComment() {
+                let _this = this
+                axios({
+                    method: 'get',
+                    url: 'http://localhost:9080/comment',
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20041) {
+                        _this.comments = response.data.data;
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
+            deleteComment(commentID) {
+                let _this = this
+                axios({
+                    method: 'delete',
+                    url: 'http://localhost:9080/comment/delete/' + commentID,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20021) {
+                        _this.onReset()
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
             hideModel() {
                 $('#add').modal('hide');
                 $('#appointment').modal('hide');
@@ -286,16 +487,8 @@
             },
             //重置查询
             onReset() {
-                let _this = this
-                axios({
-                    method: 'get',
-                    url: 'http://localhost:9080/appointments/getAll',
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    _this.appointments = response.data.data
-                });
+                this.complaint = {}
+                this.comment = {}
             },
             updateUser() {
                 axios({
@@ -337,30 +530,15 @@
                 });
             },
             beforeUpdate(rowDate) {
-                this.appointment = rowDate
-                let _this = this
-                axios({
-                    method: 'get',
-                    url: 'http://localhost:9080/schedule/weeklyScheduleByDoctorID/' + this.appointment.doctorID,
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20041) {
-                        _this.availableDates = response.data.data
-                        _this.appointment.doctorID = doctorID
-                        _this.appointment.userID = localStorage.getItem("userID")
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
+                this.complaint = rowDate
+                complaintVisible = true
             },
-            updateAppointment() {
+            updateMyComplaint() {
                 let _this = this
                 axios({
                     method: 'put',
-                    url: 'http://localhost:9080/appointments/update',
-                    data: this.appointment,
+                    url: 'http://localhost:9080/complaint/update',
+                    data: this.complaint,
                     headers: { // 设置请求头
                         Authorization: localStorage.getItem("token")
                     }
@@ -373,11 +551,11 @@
                 });
                 this.hideModel()
             },
-            deleteAppointment(appointmentID) {
+            deleteMyComplaint(complaintID) {
                 let _this = this
                 axios({
                     method: 'delete',
-                    url: 'http://localhost:9080/appointments/delete/' + appointmentID,
+                    url: 'http://localhost:9080/complaint/delete/' + complaintID,
                     headers: { // 设置请求头
                         Authorization: localStorage.getItem("token")
                     }
@@ -389,12 +567,46 @@
                     }
                 });
                 this.hideModel()
+            },
+            getMyComplaint() {
+                let _this = this
+                this.complaint.userID = this.userID
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:9080/complaint/select',
+                    data: this.complaint,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20041) {
+                        _this.complaints = response.data.data;
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
+            getMyOrder() {
+                let _this = this
+                axios({
+                    method: 'get',
+                    url: 'http://localhost:9080/orderitem/getMyOrder/' + this.userID,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20041) {
+                        _this.orderitems = response.data.data;
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
             }
         },
         data() {
             return {
                 userType: localStorage.getItem('userType'),
-                userId: localStorage.getItem('userID'),
+                userID: localStorage.getItem('userID'),
                 editing: false,
                 changePasswordDialogVisible: false,
                 visible: false,
@@ -411,18 +623,53 @@
                     createTime: '',
                     modifyTime: ''
                 },
-                appointments: [],
-                appointment: {
-                    doctorID: '',
+                complaints: [],
+                complaint: {
+                    complaintID: '',
                     userID: '',
-                    appointmentDate: '',
-                    appointmentNotes: ''
+                    merchantID: '',
+                    content: '',
+                    createTime: '',
+                    modifyTime: '',
+                    status: '',
+                    handleID: ''
                 },
-
+                orderitem: {
+                    orderID: '',
+                    userID: '',
+                    dishID: '',
+                    totalPrice: '',
+                    status: '',
+                    createTime: '',
+                    modifyTime: '',
+                    payType: '',
+                },
+                orderitems: [],
+                comment: {
+                    commentID: '',
+                    userID: '',
+                    dishID: '',
+                    rating: '',
+                    content: '',
+                    timestamp: '',
+                    merchantID: '',
+                    reply: ''
+                },
+                comments: [],
+                dishes: [],
             }
         },
         mounted: function () {
             let _this = this;
+            axios({
+                method: 'get',
+                url: 'http://localhost:9080/dish/getAll',
+                headers: { // 设置请求头
+                    Authorization: localStorage.getItem("token")
+                }
+            }).then(function (response) {
+                _this.dishes = response.data.data
+            });
             axios({
                 method: 'get',
                 url: 'http://localhost:9080/user/userInfo',
@@ -431,15 +678,6 @@
                 }
             }).then(function (response) {
                 _this.user = response.data.data
-            });
-            axios({
-                method: 'get',
-                url: 'http://localhost:9080/appointments/getAll',
-                headers: { // 设置请求头
-                    Authorization: localStorage.getItem("token")
-                }
-            }).then(function (response) {
-                _this.appointments = response.data.data
             });
         }
     })

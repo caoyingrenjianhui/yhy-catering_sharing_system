@@ -32,8 +32,6 @@ public class DishServiceImpl extends ServiceImpl<DishDao, Dish> implements IDish
     @Override
     public Result add(Dish dish) {
         Map<String, Object> map = ThreadLocalUtil.get();
-        dish.setUserID((String) map.get("userID"));
-        dish.setCreateTime(LocalDate.now().toString());
         int insert = dishDao.insert(dish);
         if (insert == 0) {
             return new Result(null, Code.SAVE_ERR, "新增失败");
@@ -43,7 +41,6 @@ public class DishServiceImpl extends ServiceImpl<DishDao, Dish> implements IDish
 
     @Override
     public Result update(Dish dish) {
-        dish.setModifyTime(LocalDate.now().toString());
         int update = dishDao.updateById(dish);
         if (update == 0) {
             return new Result(null, Code.UPDATE_ERR, "修改失败");
@@ -54,7 +51,6 @@ public class DishServiceImpl extends ServiceImpl<DishDao, Dish> implements IDish
     @Override
     public Result delete(Integer id) {
         Dish dish = dishDao.selectById(id);
-        dish.setModifyTime(LocalDate.now().toString());
         dish.setIsdel(0);
         int i = dishDao.updateById(dish);
         if (i != 0) {
@@ -99,7 +95,7 @@ public class DishServiceImpl extends ServiceImpl<DishDao, Dish> implements IDish
     }
 
     @Override
-    public void upphoto(User user) {
-        dishDao.updatePhoto(user.getPhoto(), user.getUserID());
+    public void upphoto(Dish dish) {
+        dishDao.updatePhoto(dish.getPhoto(), dish.getDishID());
     }
 }

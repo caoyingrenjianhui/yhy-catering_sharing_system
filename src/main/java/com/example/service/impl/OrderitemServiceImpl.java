@@ -1,8 +1,10 @@
 package com.example.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.controller.Code;
 import com.example.controller.Result;
 import com.example.domain.Complaint;
+import com.example.domain.Dish;
 import com.example.domain.Orderitem;
 import com.example.dao.OrderitemDao;
 import com.example.service.IOrderitemService;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +35,15 @@ public class OrderitemServiceImpl extends ServiceImpl<OrderitemDao, Orderitem> i
     public Result add(Orderitem orderitem) {
         Map<String, Object> map = ThreadLocalUtil.get();
         orderitem.setUserID((String) map.get("userID"));
-        orderitem.setCreateTime(LocalDate.now().toString());
+        String dishIds = "";
+        for (Dish dish : orderitem.getSelectedDishes()) {
+            dishIds += dish.getDishID() + ",";
+        }
+        // 去除最后一个逗号
+        if (!dishIds.isEmpty()) {
+            dishIds = dishIds.substring(0, dishIds.length() - 1);
+        }
+        orderitem.setDishID(dishIds);
         int insert = orderitemDao.insert(orderitem);
         if (insert != 0) {
             return new Result(orderitem, Code.SAVE_OK, "新增成功");
@@ -47,7 +58,6 @@ public class OrderitemServiceImpl extends ServiceImpl<OrderitemDao, Orderitem> i
         if (orderitem == null) {
             return new Result(null, Code.GET_ERR, "无此订单");
         }
-        orderitem.setModifyTime(LocalDate.now().toString());
         int i = orderitemDao.updateById(orderitem);
         if (i == 0) {
             return new Result(orderitem, Code.SAVE_ERR, "修改失败");
@@ -59,7 +69,6 @@ public class OrderitemServiceImpl extends ServiceImpl<OrderitemDao, Orderitem> i
     public Result receive(Integer id) {
         Orderitem orderitem = orderitemDao.selectById(id);
         orderitem.setStatus("1");
-        orderitem.setModifyTime(LocalDate.now().toString());
         int i = orderitemDao.updateById(orderitem);
         if (i == 0) {
             return new Result(orderitem, Code.SAVE_ERR, "修改失败");
@@ -70,7 +79,6 @@ public class OrderitemServiceImpl extends ServiceImpl<OrderitemDao, Orderitem> i
     @Override
     public Result delete(Integer id) {
         Orderitem orderitem = orderitemDao.selectById(id);
-        orderitem.setModifyTime(LocalDate.now().toString());
         orderitem.setIsdel(0);
         int i = orderitemDao.updateById(orderitem);
         if (i != 0) {
@@ -78,5 +86,16 @@ public class OrderitemServiceImpl extends ServiceImpl<OrderitemDao, Orderitem> i
         } else {
             return new Result(null, Code.DELETE_ERR, "删除失败");
         }
+    }
+
+    @Override
+    public Result getMyOrder(String id) {
+        QueryWrapper<Orderitem> wrapper = new QueryWrapper<>();
+        wrapper.eq("userID", id);
+        List<Orderitem> list = orderitemDao.selectList(wrapper);
+        if (list.size() == 0) {
+            return new Result(null, Code.GET_ERR, "查询不到数据");
+        }
+        return new Result(list, Code.GET_OK, "查询成功");
     }
 }

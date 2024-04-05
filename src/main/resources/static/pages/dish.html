@@ -70,7 +70,8 @@
         <el-form-item>
             <el-button type="primary" @click="onSubmit">查询</el-button>
             <el-button type="primary" @click="onReset">重置</el-button>
-            <el-button type="primary" data-toggle="modal" data-target="#add" @click="beforeAdd" v-if="userType==1">
+            <el-button type="primary" data-toggle="modal" data-target="#add" @click="beforeAdd" v-if="userType==2"
+                       v-if="userID==dishUserID">
                 新增
             </el-button>
             <el-button type="primary" @click="dialogVisible=true">
@@ -115,7 +116,11 @@
                         label="操作">
                     <template slot-scope="scope">
                         <el-button type="primary" @click="placeOrder(scope.row)">加入购物车</el-button>
-                        <el-button type="primary" @click="visible=true">修改图片</el-button>
+                        <br><br>
+                        <el-button type="primary" v-if="userType==2" v-if="userID==dishUserID"
+                                   @click="beforeUpdatePhoto(scope.row.dishID)">修改图片
+                        </el-button>
+                        <br><br>
                         <el-button type="primary" data-toggle="modal" data-target="#add"
                                    @click="beforeUpdate(scope.row)">编辑
                         </el-button>
@@ -178,14 +183,11 @@
                     :visible.sync="visible"
                     width="30%"
             >
-                <el-form ref="uploadForm" :model="uploadForm" action="/dish/upload" method="post"
-                         enctype="multipart/form-data">
-                    <el-form-item label="选择图片">
-                        <input type="file" name="photo" @change="handleFileChange">
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="submitUpload">上传</el-button>
-                    </el-form-item>
+                <el-form action="/dish/upload" method="post" enctype="multipart/form-data">
+                    <!-- 添加隐藏的input字段来传递id的值 -->
+                    <input type="hidden" name="dishID" :value="getDishID()"></input>
+                    <input type="file" name="photo"></input><br><br>
+                    <el-input type="submit"></el-input>
                 </el-form>
             </el-dialog>
         </div>
@@ -199,10 +201,14 @@
     >
         <!-- 在对话框中展示已选商品列表 -->
         <el-card v-for="(dish, index) in selectedDishes" :key="index" :body-style="{ padding: '20px' }">
-            <p>商品名称：{{ dish.name }}</p>
+            <p>商品名称：{{ dish.dishName }}</p>
             <p>价格：{{ dish.price }}</p>
-            <!-- 其他商品信息 -->
+            <el-button type="danger" @click="removeItem(index,dish)">删除</el-button>
         </el-card>
+        <div slot="footer">
+            <span>总价：{{ orderitem.totalPrice }}</span>
+            <el-button type="primary" @click="confimOrder()">下单</el-button>
+        </div>
     </el-dialog>
 </div>
 <script src="../assets/js/jquery-3.3.1.min.js"></script>
@@ -249,9 +255,42 @@
     new Vue({
         el: "#app",
         methods: {
+            // 删除订单项方法
+            removeItem(index, dish) {
+                this.selectedDishes.splice(index, 1);
+                this.orderitem.totalPrice = this.orderitem.totalPrice - dish.price
+            },
+            // 下单方法
+            confimOrder() {
+                let _this = this
+                this.orderitem.selectedDishes = this.selectedDishes
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:9080/orderitem/add',
+                    data: this.orderitem,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20011) {
+                        _this.onReset()
+                        _this.dialogVisible = false
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
+            beforeUpdatePhoto(dishID) {
+                this.visible = true
+                this.dish.dishID = dishID
+            },
+            getDishID() {
+                return this.dish.dishID
+            },
             placeOrder(rowDate) {
                 //添加购物车
                 this.selectedDishes.push(rowDate)
+                this.orderitem.totalPrice = this.orderitem.totalPrice + rowDate.price
             },
             hideModel() {
                 $('#add').modal('hide');
@@ -286,8 +325,10 @@
                 this.dish.dishName = null
                 this.dish.price = null
                 this.dish.categoryID = null
-                this.dish.merchantID = null
+                this.dish.merchantID = localStorage.getItem("merchantID")
                 this.dish.photo = null
+                this.orderitem = {}
+                this.selectedDishes = []
             },
             addDish() {
                 let _this = this
@@ -346,8 +387,13 @@
                 });
             },
             getCategoryName(categoryID) {
-                // 根据分类ID查找对应的分类名称
-                return this.categorys[categoryID] || '未知分类'; // 如果找不到对应的分类名称，则显示为'未知分类'
+                for (let i = 0; i < this.categorys.length; i++) {
+                    if (this.categorys[i].categoryID === categoryID) {
+                        return this.categorys[i].categoryName;
+                    }
+                }
+                // 如果找不到对应的分类名称，则返回'未知分类'
+                return '未知分类';
             },
         },
         data() {
@@ -355,8 +401,10 @@
                 merchantID: localStorage.getItem("merchantID"),
                 userType: localStorage.getItem('userType'),
                 userId: localStorage.getItem('userID'),
+                updateFlag: 0,
                 visible: false,
                 dialogVisible: false,
+                dishUserID: localStorage.getItem("dishUserID"),
                 dish: {
                     dishID: '',
                     dishName: '',
@@ -366,15 +414,7 @@
                     photo: '',
                     userID: ''
                 },
-                selectedDishes: [{
-                    dishID: '',
-                    dishName: '',
-                    price: '',
-                    categoryID: '',
-                    merchantID: '',
-                    photo: '',
-                    userID: ''
-                }],
+                selectedDishes: [],
                 dishes: [{
                     dishID: '',
                     dishName: '',
@@ -388,10 +428,19 @@
                     categoryID: '',
                     categoryName: '',
                     userID: ''
-                }]
+                }],
+                orderitem: {
+                    selectedDishes: [],
+                    orderID: '',
+                    userID: '',
+                    merchantID: '',
+                    totalPrice: 0,
+                    status: '',
+                }
             }
         },
         mounted: function () {
+            merchantID = localStorage.getItem("merchantID")
             let _this = this;
             axios({
                 method: 'get',
@@ -411,6 +460,20 @@
             }).then(function (response) {
                 _this.categorys = response.data.data
             });
+            merchant:{
+                merchantID:localStorage.getItem("merchantID")
+            }
+            axios({
+                method: 'post',
+                url: 'http://localhost:9080/merchant/select',
+                data: this.merchant,
+                headers: { // 设置请求头
+                    Authorization: localStorage.getItem("token")
+                }
+            }).then(function (response) {
+                localStorage.setItem("dishUserID", response.data.data.userId)
+            });
+
         }
     })
 </script>

@@ -27,5 +27,5 @@ public interface IDishService extends IService<Dish> {
 
     Result select(Dish dish);
 
-    void upphoto(User user);
+    void upphoto(Dish dish);
 }

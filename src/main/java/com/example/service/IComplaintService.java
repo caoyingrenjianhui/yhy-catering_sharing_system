@@ -23,4 +23,6 @@ public interface IComplaintService extends IService<Complaint> {
     Result getAll();
 
     Result select(Complaint complaint);
+
+    Result update(Complaint complaint);
 }

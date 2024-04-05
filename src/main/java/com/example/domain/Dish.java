@@ -30,19 +30,14 @@ public class Dish implements Serializable {
 
     private BigDecimal price;
 
+    @TableField(value = "categoryID")
     private Integer categoryID;
 
+    @TableField(value = "merchantID")
     private Integer merchantID;
 
     @TableLogic
     private Integer isdel;
 
     private String photo;
-
-    @TableField(value = "userID")
-    private String userID;
-
-    private String createTime;
-
-    private String modifyTime;
 }

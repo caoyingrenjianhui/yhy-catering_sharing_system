@@ -25,5 +25,7 @@ public interface IMerchantService extends IService<Merchant> {
 
     Result getAll();
 
-    void upphoto(User user);
+    void upphoto(Merchant merchant);
+
+    Result handle(Integer id);
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author 尹洪运
@@ -23,33 +23,40 @@ public class OrderitemController {
     private IOrderitemService orderitemService;
 
     @PostMapping("/add")
-    public Result add(@RequestBody Orderitem orderitem){
+    public Result add(@RequestBody Orderitem orderitem) {
         return orderitemService.add(orderitem);
     }
 
     @PutMapping("/finish/{id}")
-    public Result finish(@PathVariable Integer id){
+    public Result finish(@PathVariable Integer id) {
         return orderitemService.finish(id);
     }
 
     /**
      * 商家接单
+     *
      * @param id
      * @return
      */
     @PutMapping("/receive/{id}")
-    public Result receive(@PathVariable Integer id){
+    public Result receive(@PathVariable Integer id) {
         return orderitemService.receive(id);
     }
 
     /**
      * 删除订单
+     *
      * @param id
      * @return
      */
     @DeleteMapping("/delete/{id}")
-    public Result delete(@PathVariable Integer id){
+    public Result delete(@PathVariable Integer id) {
         return orderitemService.delete(id);
+    }
+
+    @GetMapping("/getMyOrder/{id}")
+    public Result getMyOrder(@PathVariable String id) {
+        return orderitemService.getMyOrder(id);
     }
 }
 

@@ -38,7 +38,7 @@ create table if not exists dish
 (
 	dishID int auto_increment
 		primary key,
-	dishName varchar(100) null,
+	dish_Name varchar(100) null,
 	price decimal(10,2) null,
 	categoryID int null,
 	merchantID int null,
@@ -50,11 +50,11 @@ create table if not exists merchant
 (
 	merchantID int auto_increment
 		primary key,
-	merchantName varchar(100) null,
+	merchant_Name varchar(100) null,
 	email varchar(100) null,
 	phone varchar(20) null,
 	address varchar(100) null,
-	approvalStatus varchar(50) null,
+	approval_Status int default 0 null,
 	userID int null,
 	longitude decimal(10,6) null,
 	latitude decimal(10,6) null,
@@ -68,10 +68,10 @@ create table if not exists orderitem
 		primary key,
 	userID int null,
 	merchantID int null,
-	totalPrice decimal(10,2) null,
+	total_Price decimal(10,2) null,
 	status varchar(50) null,
 	timestamp timestamp null,
-	payType varchar(50) null,
+	pay_Type varchar(50) null,
 	isdel int default 0 null
 );
 
@@ -80,9 +80,9 @@ create table if not exists salesreport
 	salesReportID int auto_increment
 		primary key,
 	merchantID int null,
-	totalSales decimal(10,2) null,
-	totalOrders int null,
-	reportDate date null
+	total_Sales decimal(10,2) null,
+	total_Orders int null,
+	report_Date date null
 );
 
 create table if not exists user

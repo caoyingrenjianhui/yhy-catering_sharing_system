@@ -3,8 +3,10 @@ package com.example.controller;
 
 import com.example.domain.Complaint;
 import com.example.domain.Merchant;
+import com.example.domain.User;
 import com.example.service.IComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -57,5 +59,12 @@ public class ComplaintController {
     public Result select(@RequestBody Complaint complaint){
         return complaintService.select(complaint);
     }
+
+    @PutMapping("update")
+    public Result update(@RequestBody Complaint complaint) {
+        return complaintService.update(complaint);
+    }
+
+
 }
 

@@ -63,7 +63,7 @@ public class DishController {
 
     //    上传头像
     @PostMapping("/upload")
-    public String up(MultipartFile photo, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String up(@RequestParam("dishID") String dishID,MultipartFile photo, HttpServletRequest request, HttpServletResponse response) throws IOException {
         //  获取图片的原始名称
         System.out.println("mingcheng:" + photo.getOriginalFilename());
 //        获取文件类型
@@ -77,15 +77,11 @@ public class DishController {
         System.out.println("pic" + pic);
 //        页面路径
         String referer = request.getHeader("referer");
-//        获取偶用户id，组成user，更改头像
-        Map<String, Object> map = ThreadLocalUtil.get();
-        String userID = (String) map.get("userID");
-        //        判断是否登陆过
-        if (userID != null) {
-            User user = new User();
-            user.setUserID((String) userID);
-            user.setPhoto(pic);
-            dishService.upphoto(user);
+        if (dishID != null) {
+            Dish dish = new Dish();
+            dish.setDishID(Integer.valueOf(dishID));
+            dish.setPhoto(pic);
+            dishService.upphoto(dish);
 //            不跳转页面
             response.sendRedirect(referer);
             return ("上传成功");

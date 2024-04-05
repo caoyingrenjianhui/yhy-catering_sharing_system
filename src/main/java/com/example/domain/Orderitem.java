@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,7 +31,8 @@ public class Orderitem implements Serializable {
     @TableField(value = "userID")
     private String userID;
 
-    private Integer merchantID;
+    @TableField(value = "dishID")
+    private String dishID;
 
     private BigDecimal totalPrice;
 
@@ -38,11 +41,8 @@ public class Orderitem implements Serializable {
      */
     private String status;
 
-    private String createTime;
-
-    private String modifyTime;
-
-    private String payType;
+    @TableField(exist = false)
+    private List<Dish> selectedDishes;
 
     @TableLogic
     private Integer isdel;

@@ -1,6 +1,7 @@
 package com.example.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
@@ -24,8 +25,10 @@ public class Comment implements Serializable {
     @TableId(value = "commentID", type = IdType.AUTO)
     private Integer commentID;
 
+    @TableField(value = "userID")
     private String userID;
 
+    @TableField(value = "dishID")
     private Integer dishID;
 
     /**

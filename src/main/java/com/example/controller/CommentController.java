@@ -30,10 +30,10 @@ public class CommentController {
 
     @GetMapping
     public Result selectByUserID(){
-        return commentService.selectBuUserID();
+        return commentService.selectByUserID();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public Result deleteById(@PathVariable Integer id){
         return commentService.deleteById(id);
     }

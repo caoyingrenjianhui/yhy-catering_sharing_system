@@ -2,6 +2,7 @@ package com.example.domain;
 
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
@@ -33,8 +34,9 @@ public class Merchant implements Serializable {
 
     private String address;
 
-    private String approvalStatus;//审批状态
+    private Integer approvalStatus;//审批状态
 
+    @TableField(value = "userID")
     private Integer userID;
 
     private BigDecimal longitude;//经度

@@ -41,7 +41,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     }
 
     @Override
-    public Result selectBuUserID() {
+    public Result selectByUserID() {
         Map<String, Object> map = ThreadLocalUtil.get();
         List<Comment> comments = commentDao.selectBuUserID((String) map.get("userID"));
         return new Result(comments, Code.GET_OK, "查询成功");

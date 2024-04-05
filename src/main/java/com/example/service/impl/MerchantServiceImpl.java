@@ -3,9 +3,12 @@ package com.example.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.controller.Code;
 import com.example.controller.Result;
+import com.example.dao.UserDao;
+import com.example.domain.Complaint;
 import com.example.domain.Merchant;
 import com.example.dao.MerchantDao;
 import com.example.domain.User;
+import com.example.domain.UserType;
 import com.example.service.IMerchantService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.utils.ThreadLocalUtil;
@@ -29,9 +32,23 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantDao, Merchant> impl
 
     @Autowired
     private MerchantDao merchantDao;
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public Result add(Merchant merchant) {
+        User user = userDao.selectById(merchant.getUserID());
+        if (user == null) {
+            return new Result(null, Code.SAVE_ERR, "系统中无此用户，请先让商家自行注册");
+        }
+        user.setUserType(UserType.merchant.getCode());
+        user.setModifyTime(LocalDate.now().toString());
+        userDao.updateById(user);
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String userID = (String) map.get("userID");
+        if (merchant.getUserID().equals(userID)) {
+            merchant.setApprovalStatus(1);
+        }
         merchantDao.insert(merchant);
         return new Result(merchant, Code.SAVE_OK, "新增成功");
     }
@@ -53,6 +70,9 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantDao, Merchant> impl
         }
         if (merchant.getMerchantName() != null && !"".equals(merchant.getMerchantName())) {
             wrapper.like("merchantName", merchant.getMerchantName());
+        }
+        if (merchant.getApprovalStatus() != null && !"".equals(merchant.getApprovalStatus())) {
+            wrapper.eq("approvalStatus", merchant.getApprovalStatus());
         }
         List<Merchant> list = merchantDao.selectList(wrapper);
         if (list == null) {
@@ -78,7 +98,18 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantDao, Merchant> impl
     }
 
     @Override
-    public void upphoto(User user) {
-        merchantDao.updatePhoto(user.getPhoto(), user.getUserID());
+    public void upphoto(Merchant merchant) {
+        merchantDao.updatePhoto(merchant.getPhoto(), merchant.getMerchantID());
+    }
+
+    @Override
+    public Result handle(Integer id) {
+        Merchant merchant = merchantDao.selectById(id);
+        merchant.setApprovalStatus(1);
+        int i = merchantDao.updateById(merchant);
+        if (i == 0) {
+            return new Result(null, Code.UPDATE_ERR, "处理失败");
+        }
+        return new Result(merchant, Code.UPDATE_OK, "处理成功");
     }
 }
