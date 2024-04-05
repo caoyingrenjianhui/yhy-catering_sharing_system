@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.controller.Result;
 import com.example.domain.Dish;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.domain.User;
 
 /**
  * <p>
@@ -23,4 +24,8 @@ public interface IDishService extends IService<Dish> {
     Result getAll();
 
     Result getByMerchant(Integer id);
+
+    Result select(Dish dish);
+
+    void upphoto(User user);
 }

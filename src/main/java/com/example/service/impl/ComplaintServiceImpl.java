@@ -1,9 +1,12 @@
 package com.example.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.controller.Code;
 import com.example.controller.Result;
 import com.example.domain.Complaint;
 import com.example.dao.ComplaintDao;
+import com.example.domain.Dish;
+import com.example.domain.User;
 import com.example.service.IComplaintService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.utils.ThreadLocalUtil;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,5 +66,24 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintDao, Complaint> i
         } else {
             return new Result(null, Code.DELETE_ERR, "删除失败");
         }
+    }
+
+    @Override
+    public Result getAll() {
+        List<User> list = complaintDao.getAll();
+        return new Result(list, Code.GET_OK, "查询成功");
+    }
+
+    @Override
+    public Result select(Complaint complaint) {
+        QueryWrapper<Complaint> wrapper = new QueryWrapper<>();
+        if (complaint.getStatus() != null) {
+            wrapper.eq("status", complaint.getStatus());
+        }
+        List<Complaint> list = complaintDao.selectList(wrapper);
+        if (list == null) {
+            return new Result(null, Code.GET_ERR, "查询不到数据");
+        }
+        return new Result(list, Code.GET_OK, "查询成功");
     }
 }

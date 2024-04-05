@@ -2,6 +2,7 @@ package com.example.controller;
 
 
 import com.example.domain.Complaint;
+import com.example.domain.Merchant;
 import com.example.service.IComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +46,16 @@ public class ComplaintController {
     @DeleteMapping("/delete/{id}")
     public Result delete(@PathVariable Integer id){
         return complaintService.delete(id);
+    }
+
+    @GetMapping("/getAll")
+    public Result getAll() {
+        return complaintService.getAll();
+    }
+
+    @PostMapping("/select")
+    public Result select(@RequestBody Complaint complaint){
+        return complaintService.select(complaint);
     }
 }
 
