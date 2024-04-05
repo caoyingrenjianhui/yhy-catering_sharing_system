@@ -160,38 +160,21 @@
             <!--我的评论-->
             <div>
                 <template>
-                    <el-table
-                            v-if="comments.length"
-                            :data="comments"
-                            style="width: 100%">
-                        <el-table-column
-                                prop="merchantID"
-                                label="商家ID"
-                                align="center">
-                        </el-table-column>
-                        <el-table-column
-                                prop="dishID"
-                                label="菜品ID"
-                                align="center">
-                        </el-table-column>
-                        <el-table-column
-                                prop="content"
-                                label="内容"
-                                align="center">
-                        </el-table-column>
-                        <el-table-column
-                                align="center"
-                                label="操作">
-                            <template slot-scope="scope">
-                                <!--                                <el-button type="primary" @click="beforeUpdate(scope.row)">修改</el-button>-->
-                                <el-button
-                                        type="primary"
-                                        @click="deleteComment(scope.row.commentID)">
-                                    删除
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                    <div v-if="comments.length">
+                        <!-- 循环渲染评论 -->
+                        <div v-for="comment in comments" :key="comment.commentID">
+                            <div>{{ comment.content }}</div>
+                            <div>{{ comment.userID }} - {{ comment.timestamp }}</div>
+
+                            <!-- 如果有回复，则循环渲染回复 -->
+                            <div v-if="comment.replies && comment.replies.length > 0">
+                                <div v-for="reply in comment.replies" :key="reply.replyID">
+                                    <div>{{ reply.content }}</div>
+                                    <div>{{ reply.userID }} - {{ reply.timestamp }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </template>
             </div>
             <!--我的投诉-->
@@ -288,6 +271,7 @@
                                         @click="delete(scope.row.complaintID)">
                                     删除
                                 </el-button>
+                                <el-button type="primary" @click="beforeAddComment(scope.row)">添加评论</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -302,6 +286,19 @@
                             <el-form>
                                 <input type="text" v-model="complaint.content"></input><br><br>
                                 <el-input @click="updateMyComplaint">提交</el-input>
+                            </el-form>
+                        </el-dialog>
+                    </div>
+                </template>
+                <template>
+                    <div>
+                        <el-dialog
+                                title="添加评论"
+                                :visible.sync="commentVisible"
+                                width="30%">
+                            <el-form>
+                                <input type="text" v-model="comment.content"></input><br><br>
+                                <el-input @click="addComment">提交</el-input>
                             </el-form>
                         </el-dialog>
                     </div>
@@ -431,6 +428,27 @@
     new Vue({
         el: "#home",
         methods: {
+            beforeAddComment(rowDate){
+                this.comment.orderItemID = rowDate.orderID
+                commentVisible = true
+            },
+            addComment(){
+                let _this = this
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:9080/comment/add',
+                    data: this.comment,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20011) {
+                        _this.onReset()
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
             getDishName(dishID) {
                 let dishNames = "";
                 for (let i = 0; i < this.dishes.length; i++) {
@@ -605,6 +623,7 @@
         },
         data() {
             return {
+                commentVisible: false,
                 userType: localStorage.getItem('userType'),
                 userID: localStorage.getItem('userID'),
                 editing: false,
@@ -652,7 +671,7 @@
                     rating: '',
                     content: '',
                     timestamp: '',
-                    merchantID: '',
+                    orderItemID: '',
                     reply: ''
                 },
                 comments: [],

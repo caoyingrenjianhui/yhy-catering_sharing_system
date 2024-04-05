@@ -28,9 +28,6 @@ public class Comment implements Serializable {
     @TableField(value = "userID")
     private String userID;
 
-    @TableField(value = "dishID")
-    private Integer dishID;
-
     /**
      * 登记，没有就是一级，有就是谁的回复
      */
@@ -40,7 +37,8 @@ public class Comment implements Serializable {
 
     private String timestamp;
 
-    private Integer merchantID;
+    @TableField(value = "orderItemID")
+    private Integer orderItemID;
 
     private Integer reply;
 
