@@ -11,10 +11,13 @@
 
     <!-- Template CSS -->
     <link rel="stylesheet" href="../assets/css/style-starter.css">
+    <script src="../js/vue.js"></script>
+    <script src="../element-ui/lib/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
 </head>
 
 <body>
-<section id="home" >
+<section id="home">
     <div class="container py-lg-5 py-md-4">
         <div class="row align-items-center">
             <div class="col-lg-6 col-sm-12 mt-lg-0 mt-4">
@@ -29,7 +32,8 @@
                             </div>
                             <div class="form-group">
                                 <label class="col-form-label">姓名</label>
-                                <input type="text" class="form-control" v-model="user.username" placeholder="" required="">
+                                <input type="text" class="form-control" v-model="user.username" placeholder=""
+                                       required="">
                             </div>
                             <div class="form-group">
                                 <label class="col-form-label">邮箱</label>
@@ -41,7 +45,8 @@
                             </div>
                             <div class="form-group">
                                 <label class="col-form-label">住址</label>
-                                <input type="text" class="form-control" v-model="user.address" placeholder="" required="">
+                                <input type="text" class="form-control" v-model="user.address" placeholder=""
+                                       required="">
                             </div>
 
                             <div class="form-group">
@@ -72,6 +77,7 @@
 </body>
 <script src="../js/bootstrap.js"></script>
 <script src="../js/jquery-2.2.3.min.js"></script>
+
 <script>
     new Vue({
         el: "#home",
@@ -87,69 +93,13 @@
                     userType: '',
                     photo: '',
                     rePassword: '',
-                    token:''
+                    token: ''
                 },
-            }
-        },
-        methods: {
-            /*登录按钮的方法*/
-            login() {
-                if (this.user.userID.length == 0) {
-                    alert("请输入您的身份证号")
-                } else if (this.user.password.length == 0) {
-                    alert("请输入您的密码")
-                } else {
-                    axios.post("/user/login", this.user).then((res) => {
-                        if (res.data.code == 20041) {
-                            console.log("成功")
-                            this.user = res.data.data
-                            localStorage.setItem("password", this.user.password)
-                            localStorage.setItem("name", this.user.username)
-                            localStorage.setItem("token", this.user.token)
-                            localStorage.setItem("userType",this.user.userType)
-                            localStorage.setItem("userID",this.user.userID)
-                            location.href = "index.html"
-                            if (this.user.userType == 0) {
-                                //如果是管理员
-                                console.log("患者")
-                                // location.href = "ad_about.html"
-                            } else if (this.user.userType == 1) {
-                                console.log("医生")
-                                // location.href = "doctor.html"
-                            } else if (this.user.userType == 2) {
-                                console.log("管理员")
-                                // location.href = "doctor.html"
-                            }
-                        } else if (res.data.code == 20040) {
-                            alert(res.data.msg);
-                        }
-                    })
-                }
-
-            },
-        }
-    })
-    new Vue({
-        el: "#exampleModalCenter2",
-        data() {
-            return {
-                user: {
-                    userID: '',
-                    username: '',
-                    password: '',
-                    phone: '',
-                    email: '',
-                    address: '',
-                    userType: '',
-                    photo: '',
-                    rePassword: ''
-                },
-                name: "",
             }
         },
         methods: {
             /*注册按钮的方法*/
-            addUser() {
+            register() {
                 //将名字和密码存入localstorage中
                 localStorage.setItem("password", this.password)
                 localStorage.setItem("name", this.name);
@@ -162,49 +112,6 @@
                     } else {
                         axios.post("/user/register", this.user).then((res) => {
                             if (res.data.code == 20011) {
-                                //将输入框清空
-                                this.name = "";
-                                this.password = "";
-                                alert(res.data.msg);
-                                location.href = "login.html"
-                            } else {
-                                alert(res.data.msg);
-                            }
-                        })
-                    }
-                }
-            }
-        }
-    })
-    new Vue({
-        el: "#exampleModalCenter3",
-        data() {
-            return {
-                user: {
-                    userID: '',
-                    username: '',
-                    password: '',
-                    phone: '',
-                    email: '',
-                    address: '',
-                    userType: '',
-                    photo: '',
-                    rePassword: ''
-                },
-                name: "",
-            }
-        },
-        methods: {
-            /*重置按钮按钮的方法*/
-            reset() {
-                if (this.user != null) {
-                    if (this.user.userID.length == 0) {
-                        alert("请您输入您的身份证号！")
-                    } else if (this.user.phone.length == 0) {
-                        alert("请您输入手机号！")
-                    } else {
-                        axios.post("/user/reset", this.user).then((res) => {
-                            if (res.data.code == 20031) {
                                 //将输入框清空
                                 this.name = "";
                                 this.password = "";

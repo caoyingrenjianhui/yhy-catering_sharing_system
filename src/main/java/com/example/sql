@@ -96,7 +96,7 @@ create table if not exists user
 	address varchar(100) null,
 	create_time date null,
 	modify_time date null,
-	user_type int null,
+	user_type int default 0 null,
 	isdel int default 0 null,
 	photo varchar(50) null
 );

@@ -12,6 +12,9 @@
 
     <!-- Template CSS -->
     <link rel="stylesheet" href="../assets/css/style-starter.css">
+    <script src="../js/vue.js"></script>
+    <script src="../element-ui/lib/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
 </head>
 
 <body>
@@ -84,6 +87,7 @@
                 <el-form-item label="头像">
                     <el-avatar :src="user.photo" :size="80" shape="circle"></el-avatar>
                 </el-form-item>
+                <br>
                 <el-form-item label="姓名">
                     <el-input v-model="user.username" :disabled="!editing"></el-input>
                 </el-form-item>
@@ -137,13 +141,9 @@
                             :visible.sync="visible"
                             width="30%"
                     >
-                        <el-form ref="uploadForm" :model="uploadForm" action="/users/upload" method="post" enctype="multipart/form-data">
-                            <el-form-item label="选择图片">
-                                <input type="file" name="photo" @change="handleFileChange">
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" @click="submitUpload">上传</el-button>
-                            </el-form-item>
+                        <el-form action="/user/upload" method="post" enctype="multipart/form-data">
+                            <input type="file" name="photo"></input><br><br>
+                            <el-input type="submit"></el-input>
                         </el-form>
                     </el-dialog>
                 </div>

@@ -60,6 +60,9 @@ public class User implements Serializable {
     private String userLng;//维度
 
     @TableField(exist = false)
+    private String token;
+
+    @TableField(exist = false)
     private String maxDistance;//最大距离
 
 }

@@ -78,7 +78,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
         claims.put("userID", user.getUserID());
         claims.put("username", user.getUsername());
         String token = JwtUtil.genToken(claims);
-        return new Result(token, Code.GET_OK, "登录成功");
+        selectById.setToken(token);
+        return new Result(selectById, Code.GET_OK, "登录成功");
     }
 
     @Override
