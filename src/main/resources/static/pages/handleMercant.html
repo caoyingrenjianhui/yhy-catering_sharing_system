@@ -234,14 +234,15 @@
             },
             beforeAdd() {
                 this.updateFlag = 0
-                this.complaint.complaintID = null
-                this.complaint.userID = null
-                this.complaint.merchantID = null
-                this.complaint.merchantID = null
-                this.complaint.merchantID = null
-                this.complaint.modifyTime = null
-                this.complaint.status = null
-                this.complaint.handleID = null
+                this.merchant.merchantID = null
+                this.merchant.merchantName = null
+                this.merchant.email = null
+                this.merchant.phone = null
+                this.merchant.address = null
+                this.merchant.approvalStatus = null
+                this.merchant.photo = null
+                this.merchant.longitude = null
+                this.merchant.latitude = null
             },
         },
         data() {
@@ -251,26 +252,20 @@
                 updateFlag: 0,
                 visible: false,
                 userLocation: null,// 用于存储用户地理位置信息
-                complaint: {
-                    complaintID: '',
+                merchant: {
+                    merchantID: '',
+                    merchantName: '',
+                    email: '',
+                    phone: '',
+                    address: '',
+                    approvalStatus: '',
                     userID: '',
-                    merchantID: '',
-                    merchantID: '',
-                    merchantID: '',
-                    modifyTime: '',
-                    status: '',
-                    handleID: ''
+                    longitude: '',
+                    latitude: '',
+                    isdel: '',
+                    photo: ''
                 },
-                complaints: [{
-                    complaintID: '',
-                    userID: '',
-                    merchantID: '',
-                    merchantID: '',
-                    merchantID: '',
-                    modifyTime: '',
-                    status: '',
-                    handleID: ''
-                }],
+                merchants: [],
             }
         },
         mounted: function () {
