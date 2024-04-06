@@ -3,9 +3,8 @@ package com.example.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.controller.Code;
 import com.example.controller.Result;
-import com.example.domain.Complaint;
-import com.example.domain.Dish;
-import com.example.domain.Orderitem;
+import com.example.dao.MerchantDao;
+import com.example.domain.*;
 import com.example.dao.OrderitemDao;
 import com.example.service.IOrderitemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -30,6 +29,8 @@ public class OrderitemServiceImpl extends ServiceImpl<OrderitemDao, Orderitem> i
 
     @Autowired
     private OrderitemDao orderitemDao;
+    @Autowired
+    private MerchantDao merchantDao;
 
     @Override
     public Result add(Orderitem orderitem) {
@@ -90,8 +91,15 @@ public class OrderitemServiceImpl extends ServiceImpl<OrderitemDao, Orderitem> i
 
     @Override
     public Result getMyOrder(String id) {
+        QueryWrapper<Merchant> queryWrapper = new QueryWrapper<>();
+        Map<String, Object> map = ThreadLocalUtil.get();
+        queryWrapper.eq("userID", (String) map.get("userID")); // 指定查询条件，这里假设字段名为userId
+        Merchant merchant = merchantDao.selectOne(queryWrapper);
         QueryWrapper<Orderitem> wrapper = new QueryWrapper<>();
         wrapper.eq("userID", id);
+        if (merchant.getMerchantID() != null) {
+            wrapper.eq("merchantID", merchant.getMerchantID());
+        }
         List<Orderitem> list = orderitemDao.selectList(wrapper);
         if (list.size() == 0) {
             return new Result(null, Code.GET_ERR, "查询不到数据");

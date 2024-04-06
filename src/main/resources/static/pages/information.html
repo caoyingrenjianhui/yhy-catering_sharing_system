@@ -258,6 +258,7 @@
                                     删除
                                 </el-button>
                                 <el-button type="primary" @click="beforeAddComment(scope.row)">添加评论</el-button>
+                                <el-button type="primary":v-if="checkMerchant()" @click="receive(scope.row)">接单</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -414,6 +415,9 @@
     new Vue({
         el: "#home",
         methods: {
+            checkMerchant(){
+
+            },
             beforeAddComment(rowDate){
                 this.comment.orderItemID = rowDate.orderID
                 commentVisible = true

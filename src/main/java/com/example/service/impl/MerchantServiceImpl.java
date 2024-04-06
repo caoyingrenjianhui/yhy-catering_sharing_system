@@ -74,6 +74,9 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantDao, Merchant> impl
         if (merchant.getApprovalStatus() != null && !"".equals(merchant.getApprovalStatus())) {
             wrapper.eq("approvalStatus", merchant.getApprovalStatus());
         }
+        if (merchant.getUserID() != null) {
+            wrapper.eq("userID", merchant.getUserID());
+        }
         List<Merchant> list = merchantDao.selectList(wrapper);
         if (list == null) {
             return new Result(null, Code.GET_ERR, "查询不到数据");
