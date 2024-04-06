@@ -1,9 +1,13 @@
 package com.example.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.controller.Code;
 import com.example.controller.Result;
+import com.example.dao.MerchantDao;
 import com.example.domain.Comment;
 import com.example.dao.CommentDao;
+import com.example.domain.Complaint;
+import com.example.domain.Merchant;
 import com.example.service.ICommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.utils.ThreadLocalUtil;
@@ -27,6 +31,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
 
     @Autowired
     private CommentDao commentDao;
+    @Autowired
+    private MerchantDao merchantDao;
 
     @Override
     public Result add(Comment comment) {
@@ -42,8 +48,24 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
 
     @Override
     public Result selectByUserID() {
+        QueryWrapper<Merchant> queryWrapper = new QueryWrapper<>();
         Map<String, Object> map = ThreadLocalUtil.get();
-        List<Comment> comments = commentDao.selectBuUserID((String) map.get("userID"));
+        queryWrapper.eq("userID", (String) map.get("userID")); // 指定查询条件，这里假设字段名为userId
+        Merchant merchant = merchantDao.selectOne(queryWrapper);
+        QueryWrapper<Comment> wrapper = new QueryWrapper<>();
+        if (merchant.getMerchantID() != null) {
+            wrapper.eq("merchantID", merchant.getMerchantID());
+        }
+        wrapper.eq("userID", (String) map.get("userID"));
+        List<Comment> comments = commentDao.selectList(wrapper);
+        return new Result(comments, Code.GET_OK, "查询成功");
+    }
+
+    @Override
+    public Result selectByMerchantID(Integer merchantID) {
+        QueryWrapper<Comment> wrapper = new QueryWrapper<>();
+        wrapper.eq("merchantID", merchantID);
+        List<Comment> comments = commentDao.selectList(wrapper);
         return new Result(comments, Code.GET_OK, "查询成功");
     }
 

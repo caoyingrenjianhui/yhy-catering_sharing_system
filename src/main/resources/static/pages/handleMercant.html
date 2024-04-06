@@ -36,16 +36,16 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav mx-lg-auto">
                             <li class="nav-item">
-                                <a class="nav-link" href="index.html">Home </a>
+                                <a class="nav-link" href="index.html">主页 </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="merchant.html">商家列表</a>
+                            </li>
+                            <li class="nav-item">
+                                <a v-if="userType==2" class="nav-link" href="complaints.html">处理投诉</a>
                             </li>
                             <li class="nav-item active">
-                                <a class="nav-link" href="merchant.html">About</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="services.html">Services</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="contact.html">Contact</a>
+                                <a v-if="userType==2" class="nav-link" href="handleMercant.html">审核商家入驻</a>
                             </li>
                         </ul>
                         <ul class="navbar-nav search-right mt-lg-0 mt-2">
@@ -59,16 +59,6 @@
                         <ul>
                             <li><a href="information.html" class="nav-link" id="username"></a></li>
                         </ul>
-                        <div id="search" class="pop-overlay">
-                            <div class="popup">
-                                <form action="#" method="GET" class="d-sm-flex">
-                                    <input type="search" placeholder="Search.." name="search" required="required"
-                                           autofocus>
-                                    <button type="submit">Search</button>
-                                    <a class="close" href="#url">&times;</a>
-                                </form>
-                            </div>
-                        </div>
                     </div>
                 </nav>
             </div>

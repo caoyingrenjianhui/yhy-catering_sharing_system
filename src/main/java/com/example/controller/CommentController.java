@@ -37,5 +37,11 @@ public class CommentController {
     public Result deleteById(@PathVariable Integer id){
         return commentService.deleteById(id);
     }
+
+    @GetMapping("/selectByMerchantID/{id")
+    public Result selectByMerchantID(@PathVariable Integer merchantID){
+        return commentService.selectByMerchantID(merchantID);
+    }
+
 }
 

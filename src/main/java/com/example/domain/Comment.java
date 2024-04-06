@@ -40,6 +40,9 @@ public class Comment implements Serializable {
     @TableField(value = "orderItemID")
     private Integer orderItemID;
 
+    @TableField(value = "merchantID")
+    private Integer merchantID;
+
     private Integer reply;
 
     @TableLogic

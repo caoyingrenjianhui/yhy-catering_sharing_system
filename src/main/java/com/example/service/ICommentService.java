@@ -19,4 +19,6 @@ public interface ICommentService extends IService<Comment> {
     Result selectByUserID();
 
     Result deleteById(Integer id);
+
+    Result selectByMerchantID(Integer merchamtID);
 }

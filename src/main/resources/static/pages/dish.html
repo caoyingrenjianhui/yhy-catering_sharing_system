@@ -264,6 +264,7 @@
             confimOrder() {
                 let _this = this
                 this.orderitem.selectedDishes = this.selectedDishes
+                this.orderitem.merchantID = this.merchantID
                 axios({
                     method: 'post',
                     url: 'http://localhost:9080/orderitem/add',

@@ -42,10 +42,10 @@
                                 <a class="nav-link" href="merchant.html">商家列表</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="complaints.html">处理投诉</a>
+                                <a v-if="userType==2" class="nav-link" href="complaints.html">处理投诉</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="handleMercant.html">审核商家入驻</a>
+                                <a v-if="userType==2" class="nav-link" href="handleMercant.html">审核商家入驻</a>
                             </li>
                         </ul>
                         <ul class="navbar-nav search-right mt-lg-0 mt-2">
@@ -59,20 +59,6 @@
                         <ul>
                             <li><a href="information.html" class="nav-link" id="username"></a></li>
                         </ul>
-
-                        <!-- //toggle switch for light and dark theme -->
-                        <!-- search popup -->
-                        <div id="search" class="pop-overlay">
-                            <div class="popup">
-                                <form action="#" method="GET" class="d-sm-flex">
-                                    <input type="search" placeholder="Search.." name="search" required="required"
-                                           autofocus>
-                                    <button type="submit">Search</button>
-                                    <a class="close" href="#url">&times;</a>
-                                </form>
-                            </div>
-                        </div>
-                        <!-- /search popup -->
                     </div>
                 </nav>
             </div>
@@ -93,7 +79,7 @@
                     <div class="mt-sm-5 mt-4">
                         <a class="btn btn-outline-primary btn-style mr-2" href="merchant.html"> Read More <span
                                 class="fa fa-chevron-right"></span></a>
-                        <a class="btn btn-primary btn-style" href="contact.html"> Order Now <span
+                        <a class="btn btn-primary btn-style" href="merchant.html"> Order Now <span
                                 class="fa fa-chevron-right"></span></a>
                     </div>
                 </div>
