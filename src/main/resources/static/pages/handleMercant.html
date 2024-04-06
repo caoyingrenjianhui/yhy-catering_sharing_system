@@ -269,17 +269,17 @@
             }
         },
         mounted: function () {
-            let _this = this;
-            axios({
-                method: 'get',
-                url: 'http://localhost:9080/merchant/getAll',
-                headers: { // 设置请求头
-                    Authorization: localStorage.getItem("token")
-                }
-                // responseType: 'stream'
-            }).then(function (response) {
-                _this.merchants = response.data.data
-            });
+            // let _this = this;
+            // axios({
+            //     method: 'get',
+            //     url: 'http://localhost:9080/merchant/getAll',
+            //     headers: { // 设置请求头
+            //         Authorization: localStorage.getItem("token")
+            //     }
+            //     // responseType: 'stream'
+            // }).then(function (response) {
+            //     _this.merchants = response.data.data
+            // });
         }
     })
 </script>
