@@ -79,6 +79,11 @@ public class UserController {
         return userService.updatePassword(user, token);
     }
 
+    @PostMapping("/reset")
+    public Result reset(@RequestBody @Validated User user) {
+        return userService.reset(user);
+    }
+
     //    上传头像
     @PostMapping("/upload")
     public String up(@RequestParam("userID") String userID, MultipartFile photo, HttpServletRequest request, HttpServletResponse response) throws IOException {

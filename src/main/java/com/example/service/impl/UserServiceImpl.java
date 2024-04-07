@@ -129,4 +129,29 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     public void upphoto(User user) {
         userDao.updatePhoto(user.getPhoto(), user.getUserID());
     }
+
+    @Override
+    public Result reset(User user) {
+        User selectById = userDao.selectById(user.getUserID());
+        if (selectById == null) {
+            return new Result(null, Code.UPDATE_ERR, "无此账号");
+        }
+        if (!selectById.getPhone().equals(user.getPhone())) {
+            return new Result(null, Code.UPDATE_ERR, "手机号不正确");
+        }
+        String md5String;
+        try {
+            md5String = Md5Util.getMD5String("123456");
+        } catch (Exception e) {
+            return new Result(user, Code.SAVE_ERR, "密码加密失败");
+        }
+        selectById.setPassword(md5String);
+        selectById.setModifyTime(LocalDate.now().toString());
+        int i = userDao.updateById(selectById);
+        if (i != 0) {
+            return new Result(selectById, Code.UPDATE_OK, "密码重置成功");
+        } else {
+            return new Result(selectById, Code.UPDATE_ERR, "密码重置失败");
+        }
+    }
 }
