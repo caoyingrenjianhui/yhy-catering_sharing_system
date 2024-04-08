@@ -34,6 +34,9 @@ public class Orderitem implements Serializable {
     @TableField(value = "dishID")
     private String dishID;
 
+    @TableField(value = "merchantID")
+    private String merchantID;
+
     private BigDecimal totalPrice;
 
     /**

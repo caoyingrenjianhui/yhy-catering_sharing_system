@@ -91,15 +91,19 @@ public class OrderitemServiceImpl extends ServiceImpl<OrderitemDao, Orderitem> i
 
     @Override
     public Result getMyOrder(String id) {
-        QueryWrapper<Merchant> queryWrapper = new QueryWrapper<>();
-        Map<String, Object> map = ThreadLocalUtil.get();
-        queryWrapper.eq("userID", (String) map.get("userID")); // 指定查询条件，这里假设字段名为userId
-        Merchant merchant = merchantDao.selectOne(queryWrapper);
         QueryWrapper<Orderitem> wrapper = new QueryWrapper<>();
         wrapper.eq("userID", id);
-        if (merchant.getMerchantID() != null) {
-            wrapper.eq("merchantID", merchant.getMerchantID());
+        List<Orderitem> list = orderitemDao.selectList(wrapper);
+        if (list.size() == 0) {
+            return new Result(null, Code.GET_ERR, "查询不到数据");
         }
+        return new Result(list, Code.GET_OK, "查询成功");
+    }
+
+    @Override
+    public Result getMyOrderItem(String id) {
+        QueryWrapper<Orderitem> wrapper = new QueryWrapper<>();
+        wrapper.eq("merchantID", id);
         List<Orderitem> list = orderitemDao.selectList(wrapper);
         if (list.size() == 0) {
             return new Result(null, Code.GET_ERR, "查询不到数据");

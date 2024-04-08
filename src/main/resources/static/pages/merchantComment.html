@@ -49,7 +49,6 @@
             </div>
         </div>
     </section>
-    <!--商家列表-->
     <template>
         <div>
             <div v-for="comment in comments" :key="comment.commentID">
@@ -112,22 +111,21 @@
 <script>
     new Vue({
         el: "#app",
-        methods: {
-
-        },
+        methods: {},
         data() {
             return {
                 userType: localStorage.getItem('userType'),
                 userId: localStorage.getItem('userID'),
                 merchantID: localStorage.getItem("merchantID"),
-                comments: []
+                comments: [],
+                comment:{}
             }
         },
         mounted: function () {
             let _this = this
             axios({
                 method: 'get',
-                url: 'http://localhost:9080/comment/selectByMerchantID/' + merchantID,
+                url: 'http://localhost:9080/comment/selectByMerchantID/' + localStorage.getItem("merchantID"),
                 headers: { // 设置请求头
                     Authorization: localStorage.getItem("token")
                 }

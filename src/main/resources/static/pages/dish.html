@@ -276,6 +276,7 @@
                     if (response.data.code == 20011) {
                         _this.onReset()
                         _this.dialogVisible = false
+                        alert(response.data.msg)
                     } else {
                         alert(response.data.msg)
                     }

@@ -50,7 +50,7 @@
                             <li class="nav-item">
                                 <a v-if="userType==2" class="nav-link" href="handleMercant.html">审核商家入驻</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item active">
                                 <a v-if="userType==1" class="nav-link" href="handleOrder.html">接单</a>
                             </li>
                         </ul>
@@ -71,150 +71,11 @@
         </section>
     </header>
 
-
     <section class="w3l-products py-5" id="projects">
         <div class="container py-lg-3">
-            <el-form style="margin-top: 100px; margin-left: 350px;" :model="user" :inline="true" align="center">
-
-                <el-form-item label="头像">
-                    <el-avatar :src="user.photo" :size="80" shape="circle"></el-avatar>
-                </el-form-item>
-                <br>
-                <el-form-item label="姓名">
-                    <el-input v-model="user.username" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item label="电话">
-                    <el-input v-model="user.phone" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item label="邮箱">
-                    <el-input v-model="user.email" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item label="地址">
-                    <el-input v-model="user.address" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item>
-                    <el-button v-if="!editing" type="primary" @click="toggleEditing">修改信息</el-button>
-                    <el-button v-else type="primary" @click="updateUser">保存</el-button>
-                    <br><br>
-                    <el-button @click="getMyComment()">查看我的评论</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="visible=true">修改头像</el-button>
-                    <br><br>
-                    <el-button @click="getMyComplaint()">查看我的投诉</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
-                    <br><br>
-                    <el-button @click="getMyOrder()">查看我的订单</el-button>
-                </el-form-item>
-            </el-form>
-            <!--修改密码-->
-            <el-dialog title="修改密码" :visible.sync="changePasswordDialogVisible">
-                <el-form ref="passwordForm" label-width="100px">
-                    <el-form-item label="原密码" prop="oldPassword">
-                        <el-input type="password" v-model="user.oldPassword"></el-input>
-                    </el-form-item>
-                    <el-form-item label="新密码" prop="newPassword">
-                        <el-input type="password" v-model="user.password"></el-input>
-                    </el-form-item>
-                    <el-form-item label="重复密码" prop="confirmPassword">
-                        <el-input type="password" v-model="user.rePassword"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="changePasswordDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="changePassword">确认修改</el-button>
-                </div>
-            </el-dialog>
-            <!--上传图片-->
-            <template>
-                <div>
-                    <el-dialog
-                            title="修改头像"
-                            :visible.sync="visible"
-                            width="30%"
-                    >
-                        <el-form action="/user/upload" method="post" enctype="multipart/form-data">
-                            <!-- 添加隐藏的input字段来传递id的值 -->
-                            <input type="hidden" name="userID" :value="getUserID()"></input>
-                            <input type="file" name="photo"></input><br><br>
-                            <el-input type="submit"></el-input>
-                        </el-form>
-                    </el-dialog>
-                </div>
-            </template>
-
-            <!--我的评论-->
-            <div>
-                <template>
-                    <div v-if="comments.length">
-                        <!-- 循环渲染评论 -->
-                        <div v-for="comment in comments" :key="comment.commentID">
-                            <div>{{ comment.content }}</div>
-                            <div>{{ comment.userID }} - {{ comment.timestamp }}</div>
-
-                            <!-- 如果有回复，则循环渲染回复 -->
-                            <div v-if="comment.replies && comment.replies.length > 0">
-                                <div v-for="reply in comment.replies" :key="reply.replyID">
-                                    <div>{{ reply.content }}</div>
-                                    <div>{{ reply.userID }} - {{ reply.timestamp }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </div>
-            <!--我的投诉-->
-            <div>
+            <div style="margin-top: 100px">
                 <template>
                     <el-table
-                            v-if="complaints.length"
-                            :data="complaints"
-                            style="width: 100%">
-                        <el-table-column
-                                prop="merchantID"
-                                label="商家ID"
-                                align="center">
-                        </el-table-column>
-                        <el-table-column
-                                prop="content"
-                                label="内容"
-                                align="center">
-                        </el-table-column>
-                        <el-table-column
-                                prop="status"
-                                label="状态"
-                                align="center">
-                            <template slot-scope="scope">
-                                <el-row v-if="scope.row.status==0">未处理</el-row>
-                                <el-row v-if="scope.row.status==1">已处理</el-row>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                align="center"
-                                label="操作">
-                            <template slot-scope="scope">
-                                <el-button type="primary" @click="beforeUpdate(scope.row)">修改</el-button>
-                                <el-button
-                                        type="primary"
-                                        @click="delete(scope.row.complaintID)">
-                                    删除
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </template>
-            </div>
-            <!--我的订单-->
-            <div>
-                <template>
-                    <el-table
-                            v-if="orderitems.length"
                             :data="orderitems"
                             style="width: 100%">
                         <el-table-column
@@ -243,43 +104,10 @@
                                 align="center"
                                 label="操作">
                             <template slot-scope="scope">
-                                <el-button
-                                        type="primary"
-                                        @click="deleteOrder(scope.row.orderID)">
-                                    删除
-                                </el-button>
-                                <el-button type="primary" @click="beforeAddComment(scope.row)">添加评论</el-button>
-                                <el-button type="primary" @click="finish(scope.row.orderID)">完成</el-button>
+                                <el-button type="primary" @click="receive(scope.row.orderID)">接单</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
-                </template>
-                <template>
-                    <div>
-                        <el-dialog
-                                title="修改"
-                                :visible.sync="complaintVisible"
-                                width="30%"
-                        >
-                            <el-form>
-                                <input type="text" v-model="complaint.content"></input><br><br>
-                                <el-input @click="updateMyComplaint">提交</el-input>
-                            </el-form>
-                        </el-dialog>
-                    </div>
-                </template>
-                <template>
-                    <div>
-                        <el-dialog
-                                title="添加评论"
-                                :visible.sync="commentVisible"
-                                width="30%">
-                            <el-form>
-                                内容：<input type="text" v-model="comment.content"></input><br><br>
-                                <el-button @click="addComment">提交</el-button>
-                            </el-form>
-                        </el-dialog>
-                    </div>
                 </template>
             </div>
         </div>
@@ -406,11 +234,11 @@
     new Vue({
         el: "#home",
         methods: {
-            finish(orderID) {
+            receive(orderID) {
                 let _this = this
                 axios({
                     method: 'get',
-                    url: 'http://localhost:9080/orderitem/finish/' + orderID,
+                    url: 'http://localhost:9080/orderitem/receive/' + orderID,
                     headers: { // 设置请求头
                         Authorization: localStorage.getItem("token")
                     }
@@ -422,9 +250,25 @@
                     }
                 });
             },
+            onReset(){
+                let _this = this
+                axios({
+                    method: 'get',
+                    url: 'http://localhost:9080/orderitem/getMyOrderItem/' + localStorage.getItem("merchantID"),
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20041) {
+                        _this.orderitems = response.data.data;
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
             beforeAddComment(rowDate) {
                 this.comment.orderItemID = rowDate.orderID
-                this.commentVisible = true
+                commentVisible = true
             },
             addComment() {
                 let _this = this
@@ -455,54 +299,6 @@
                 }
                 return dishNames
             },
-            getMyComment() {
-                let _this = this
-                axios({
-                    method: 'get',
-                    url: 'http://localhost:9080/comment',
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20041) {
-                        _this.comments = response.data.data;
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
-            },
-            deleteOrder(orderID) {
-                let _this = this
-                axios({
-                    method: 'delete',
-                    url: 'http://localhost:9080/comment/delete/' + orderID,
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20021) {
-                        _this.onReset()
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
-            },
-            deleteComment(commentID) {
-                let _this = this
-                axios({
-                    method: 'delete',
-                    url: 'http://localhost:9080/comment/delete/' + commentID,
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20021) {
-                        _this.onReset()
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
-            },
             hideModel() {
                 $('#add').modal('hide');
                 $('#appointment').modal('hide');
@@ -512,50 +308,6 @@
             },
             toggleEditing() {
                 this.editing = !this.editing;
-            },
-            //重置查询
-            onReset() {
-                this.complaint = {}
-                this.comment = {}
-            },
-            updateUser() {
-                axios({
-                    method: 'put',
-                    url: 'http://localhost:9080/user/update',
-                    data: this.user,
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20031) {
-                        this.user = response.data.data
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
-                this.editing = false;
-            },
-            showChangePasswordDialog() {
-                this.changePasswordDialogVisible = true;
-                this.user.password = null
-            },
-            changePassword() {
-                let _this = this
-                axios({
-                    method: 'put',
-                    url: 'http://localhost:9080/user/updatePassword',
-                    data: this.user,
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20031) {
-                        this.user = response.data.data
-                        _this.changePasswordDialogVisible = false;
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
             },
             beforeUpdate(rowDate) {
                 this.complaint = rowDate
@@ -633,37 +385,13 @@
         },
         data() {
             return {
-                complaintVisible: false,
                 commentVisible: false,
                 userType: localStorage.getItem('userType'),
                 userID: localStorage.getItem('userID'),
                 editing: false,
                 changePasswordDialogVisible: false,
                 visible: false,
-                availableDates: [], // 存储可用的预约日期
-                user: {
-                    userID: '',
-                    username: '',
-                    phone: '',
-                    address: '',
-                    email: '',
-                    password: '',
-                    oldPassword: '',
-                    rePassword: '',
-                    createTime: '',
-                    modifyTime: ''
-                },
-                complaints: [],
-                complaint: {
-                    complaintID: '',
-                    userID: '',
-                    merchantID: '',
-                    content: '',
-                    createTime: '',
-                    modifyTime: '',
-                    status: '',
-                    handleID: ''
-                },
+                dishes: [],
                 orderitem: {
                     orderID: '',
                     userID: '',
@@ -685,12 +413,23 @@
                     orderItemID: '',
                     reply: ''
                 },
-                comments: [],
-                dishes: [],
             }
         },
         mounted: function () {
-            let _this = this;
+            let _this = this
+            axios({
+                method: 'get',
+                url: 'http://localhost:9080/orderitem/getMyOrderItem/' + localStorage.getItem("merchantID"),
+                headers: { // 设置请求头
+                    Authorization: localStorage.getItem("token")
+                }
+            }).then(function (response) {
+                if (response.data.code == 20041) {
+                    _this.orderitems = response.data.data;
+                } else {
+                    alert(response.data.msg)
+                }
+            });
             axios({
                 method: 'get',
                 url: 'http://localhost:9080/dish/getAll',
@@ -699,15 +438,6 @@
                 }
             }).then(function (response) {
                 _this.dishes = response.data.data
-            });
-            axios({
-                method: 'get',
-                url: 'http://localhost:9080/user/userInfo',
-                headers: { // 设置请求头
-                    Authorization: localStorage.getItem("token")
-                }
-            }).then(function (response) {
-                _this.user = response.data.data
             });
         }
     })

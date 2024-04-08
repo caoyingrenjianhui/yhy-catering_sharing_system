@@ -38,7 +38,7 @@ public class OrderitemController {
      * @param id
      * @return
      */
-    @PutMapping("/receive/{id}")
+    @GetMapping("/receive/{id}")
     public Result receive(@PathVariable Integer id) {
         return orderitemService.receive(id);
     }
@@ -58,5 +58,11 @@ public class OrderitemController {
     public Result getMyOrder(@PathVariable String id) {
         return orderitemService.getMyOrder(id);
     }
+
+    @GetMapping("/getMyOrderItem/{id}")
+    public Result getMyOrderItem(@PathVariable String id) {
+        return orderitemService.getMyOrderItem(id);
+    }
+
 }
 

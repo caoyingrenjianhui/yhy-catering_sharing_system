@@ -1,9 +1,12 @@
 package com.example.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.controller.Result;
 import com.example.domain.Merchant;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.domain.User;
+
+import java.util.List;
 
 /**
  * <p>
@@ -28,4 +31,5 @@ public interface IMerchantService extends IService<Merchant> {
     void upphoto(Merchant merchant);
 
     Result handle(Integer id);
+
 }

@@ -42,10 +42,16 @@
                                 <a class="nav-link" href="merchant.html">商家列表</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="myOrder.html">我的订单</a>
+                            </li>
+                            <li class="nav-item">
                                 <a v-if="userType==2" class="nav-link" href="complaints.html">处理投诉</a>
                             </li>
                             <li class="nav-item">
                                 <a v-if="userType==2" class="nav-link" href="handleMercant.html">审核商家入驻</a>
+                            </li>
+                            <li class="nav-item">
+                                <a v-if="userType==1" class="nav-link" href="handleOrder.html">接单</a>
                             </li>
                         </ul>
                         <ul class="navbar-nav search-right mt-lg-0 mt-2">

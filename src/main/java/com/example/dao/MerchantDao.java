@@ -1,5 +1,6 @@
 package com.example.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.domain.Merchant;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,9 +20,9 @@ import java.util.List;
 @Mapper
 public interface MerchantDao extends BaseMapper<Merchant> {
 
-    @Select("select * from Merchant where isdel=0 and approval_Status = 1")
+    @Select("select * from merchant where isdel=0 and approval_Status = 1")
     List<Merchant> getAll();
 
-    @Update("update Merchant set photo = #{photo} where merchantID = #{merchantID}")
+    @Update("update merchant set photo = #{photo} where merchantID = #{merchantID}")
     void updatePhoto(String photo, Integer merchantID);
 }

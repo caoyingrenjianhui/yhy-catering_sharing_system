@@ -23,4 +23,6 @@ public interface IOrderitemService extends IService<Orderitem> {
     Result delete(Integer id);
 
     Result getMyOrder(String id);
+
+    Result getMyOrderItem(String id);
 }

@@ -19,6 +19,7 @@ create table if not exists comment
 	timestamp timestamp null,
 	merchantID int null,
 	reply int null,
+	orderItemID int null,
 	isdel int default 0 null
 );
 

@@ -41,7 +41,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="merchant.html">商家列表</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item active">
                                 <a class="nav-link" href="myOrder.html">我的订单</a>
                             </li>
                             <li class="nav-item">
@@ -74,143 +74,6 @@
 
     <section class="w3l-products py-5" id="projects">
         <div class="container py-lg-3">
-            <el-form style="margin-top: 100px; margin-left: 350px;" :model="user" :inline="true" align="center">
-
-                <el-form-item label="头像">
-                    <el-avatar :src="user.photo" :size="80" shape="circle"></el-avatar>
-                </el-form-item>
-                <br>
-                <el-form-item label="姓名">
-                    <el-input v-model="user.username" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item label="电话">
-                    <el-input v-model="user.phone" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item label="邮箱">
-                    <el-input v-model="user.email" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item label="地址">
-                    <el-input v-model="user.address" :disabled="!editing"></el-input>
-                </el-form-item>
-                <br>
-                <el-form-item>
-                    <el-button v-if="!editing" type="primary" @click="toggleEditing">修改信息</el-button>
-                    <el-button v-else type="primary" @click="updateUser">保存</el-button>
-                    <br><br>
-                    <el-button @click="getMyComment()">查看我的评论</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="visible=true">修改头像</el-button>
-                    <br><br>
-                    <el-button @click="getMyComplaint()">查看我的投诉</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
-                    <br><br>
-                    <el-button @click="getMyOrder()">查看我的订单</el-button>
-                </el-form-item>
-            </el-form>
-            <!--修改密码-->
-            <el-dialog title="修改密码" :visible.sync="changePasswordDialogVisible">
-                <el-form ref="passwordForm" label-width="100px">
-                    <el-form-item label="原密码" prop="oldPassword">
-                        <el-input type="password" v-model="user.oldPassword"></el-input>
-                    </el-form-item>
-                    <el-form-item label="新密码" prop="newPassword">
-                        <el-input type="password" v-model="user.password"></el-input>
-                    </el-form-item>
-                    <el-form-item label="重复密码" prop="confirmPassword">
-                        <el-input type="password" v-model="user.rePassword"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="changePasswordDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="changePassword">确认修改</el-button>
-                </div>
-            </el-dialog>
-            <!--上传图片-->
-            <template>
-                <div>
-                    <el-dialog
-                            title="修改头像"
-                            :visible.sync="visible"
-                            width="30%"
-                    >
-                        <el-form action="/user/upload" method="post" enctype="multipart/form-data">
-                            <!-- 添加隐藏的input字段来传递id的值 -->
-                            <input type="hidden" name="userID" :value="getUserID()"></input>
-                            <input type="file" name="photo"></input><br><br>
-                            <el-input type="submit"></el-input>
-                        </el-form>
-                    </el-dialog>
-                </div>
-            </template>
-
-            <!--我的评论-->
-            <div>
-                <template>
-                    <div v-if="comments.length">
-                        <!-- 循环渲染评论 -->
-                        <div v-for="comment in comments" :key="comment.commentID">
-                            <div>{{ comment.content }}</div>
-                            <div>{{ comment.userID }} - {{ comment.timestamp }}</div>
-
-                            <!-- 如果有回复，则循环渲染回复 -->
-                            <div v-if="comment.replies && comment.replies.length > 0">
-                                <div v-for="reply in comment.replies" :key="reply.replyID">
-                                    <div>{{ reply.content }}</div>
-                                    <div>{{ reply.userID }} - {{ reply.timestamp }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </div>
-            <!--我的投诉-->
-            <div>
-                <template>
-                    <el-table
-                            v-if="complaints.length"
-                            :data="complaints"
-                            style="width: 100%">
-                        <el-table-column
-                                prop="merchantID"
-                                label="商家ID"
-                                align="center">
-                        </el-table-column>
-                        <el-table-column
-                                prop="content"
-                                label="内容"
-                                align="center">
-                        </el-table-column>
-                        <el-table-column
-                                prop="status"
-                                label="状态"
-                                align="center">
-                            <template slot-scope="scope">
-                                <el-row v-if="scope.row.status==0">未处理</el-row>
-                                <el-row v-if="scope.row.status==1">已处理</el-row>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                align="center"
-                                label="操作">
-                            <template slot-scope="scope">
-                                <el-button type="primary" @click="beforeUpdate(scope.row)">修改</el-button>
-                                <el-button
-                                        type="primary"
-                                        @click="delete(scope.row.complaintID)">
-                                    删除
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </template>
-            </div>
-            <!--我的订单-->
             <div>
                 <template>
                     <el-table
@@ -424,6 +287,7 @@
             },
             beforeAddComment(rowDate) {
                 this.comment.orderItemID = rowDate.orderID
+                this.comment.merchantID = rowDate.merchantID
                 this.commentVisible = true
             },
             addComment() {
@@ -614,22 +478,6 @@
                     }
                 });
             },
-            getMyOrder() {
-                let _this = this
-                axios({
-                    method: 'get',
-                    url: 'http://localhost:9080/orderitem/getMyOrder/' + this.userID,
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20041) {
-                        _this.orderitems = response.data.data;
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
-            }
         },
         data() {
             return {
@@ -693,21 +541,25 @@
             let _this = this;
             axios({
                 method: 'get',
+                url: 'http://localhost:9080/orderitem/getMyOrder/' + this.userID,
+                headers: { // 设置请求头
+                    Authorization: localStorage.getItem("token")
+                }
+            }).then(function (response) {
+                if (response.data.code == 20041) {
+                    _this.orderitems = response.data.data;
+                } else {
+                    alert(response.data.msg)
+                }
+            });
+            axios({
+                method: 'get',
                 url: 'http://localhost:9080/dish/getAll',
                 headers: { // 设置请求头
                     Authorization: localStorage.getItem("token")
                 }
             }).then(function (response) {
                 _this.dishes = response.data.data
-            });
-            axios({
-                method: 'get',
-                url: 'http://localhost:9080/user/userInfo',
-                headers: { // 设置请求头
-                    Authorization: localStorage.getItem("token")
-                }
-            }).then(function (response) {
-                _this.user = response.data.data
             });
         }
     })

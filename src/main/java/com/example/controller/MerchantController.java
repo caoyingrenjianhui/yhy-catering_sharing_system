@@ -2,11 +2,9 @@ package com.example.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.example.domain.Merchant;
 import com.example.domain.User;
 import com.example.service.IMerchantService;
-import com.example.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -41,15 +38,19 @@ public class MerchantController {
 
     @PostMapping("/searchNearbyMerchants")
     public Result searchNearbyMerchants(@RequestBody User user) {
+        // 计算距离并添加到查询结果中
+        String distanceField = "6371 * acos(cos(radians(" + user.getUserLat() + ")) * cos(radians(latitude)) * cos(radians(longitude) - radians(" + user.getUserLng() + ")) + sin(radians(" + user.getUserLat() + ")) * sin(radians(latitude)))";
 
         // 构造查询条件
-        QueryWrapper<Merchant> queryWrapper = Wrappers.<Merchant>query();
-        queryWrapper.apply("SELECT *, (6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance FROM merchant ORDER BY distance",
-                user.getUserLat(), user.getUserLng(), user.getUserLat());
+        QueryWrapper<Merchant> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("isdel", 0); // 添加查询条件：is_del = 0
+        queryWrapper.select("*," + distanceField + " AS distance"); // 将距离作为字段添加到查询结果中
+        queryWrapper.orderByAsc("distance"); // 按距离升序排序
 
-        // 调用 MyBatis-Plus 的 list 方法查询符合条件的商家信息
+        // 调用 MyBatis-Plus 的查询方法执行查询
         List<Merchant> nearbyMerchants = merchantService.list(queryWrapper);
-        if (nearbyMerchants.size() == 0) {
+
+        if (nearbyMerchants.isEmpty()) {
             return new Result(null, Code.GET_ERR, "未查询到相关商家");
         }
         return new Result(nearbyMerchants, Code.GET_OK, "查询成功");

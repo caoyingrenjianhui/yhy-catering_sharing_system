@@ -53,7 +53,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         queryWrapper.eq("userID", (String) map.get("userID")); // 指定查询条件，这里假设字段名为userId
         Merchant merchant = merchantDao.selectOne(queryWrapper);
         QueryWrapper<Comment> wrapper = new QueryWrapper<>();
-        if (merchant.getMerchantID() != null) {
+        if (merchant != null) {
             wrapper.eq("merchantID", merchant.getMerchantID());
         }
         wrapper.eq("userID", (String) map.get("userID"));

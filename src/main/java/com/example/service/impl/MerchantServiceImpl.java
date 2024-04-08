@@ -115,4 +115,5 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantDao, Merchant> impl
         }
         return new Result(merchant, Code.UPDATE_OK, "处理成功");
     }
+
 }
