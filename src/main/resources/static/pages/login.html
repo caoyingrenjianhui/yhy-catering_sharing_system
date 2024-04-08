@@ -88,28 +88,6 @@
             }
         },
         methods: {
-            /*重置按钮按钮的方法*/
-            reset() {
-                if (this.user != null) {
-                    if (this.user.userID.length == 0) {
-                        alert("请您输入您的身份证号！")
-                    } else if (this.user.phone.length == 0) {
-                        alert("请您输入手机号！")
-                    } else {
-                        axios.post("/user/reset", this.user).then((res) => {
-                            if (res.data.code == 20031) {
-                                //将输入框清空
-                                this.name = "";
-                                this.password = "";
-                                alert(res.data.msg);
-                                location.href = "login.html"
-                            } else {
-                                alert(res.data.msg);
-                            }
-                        })
-                    }
-                }
-            },
             /*登录按钮的方法*/
             login() {
                 if (this.user.userID.length == 0) {
@@ -145,53 +123,6 @@
                 }
 
             },
-        }
-    })
-    new Vue({
-        el: "#exampleModalCenter2",
-        data() {
-            return {
-                user: {
-                    userID: '',
-                    username: '',
-                    password: '',
-                    phone: '',
-                    email: '',
-                    address: '',
-                    userType: '',
-                    photo: '',
-                    rePassword: ''
-                },
-                name: "",
-            }
-        },
-        methods: {
-            /*注册按钮的方法*/
-            addUser() {
-                //将名字和密码存入localstorage中
-                localStorage.setItem("password", this.password)
-                localStorage.setItem("name", this.name);
-                //调用存储
-                if (this.user != null) {
-                    if (this.user.username.length == 0) {
-                        alert("请您输入您的姓名！")
-                    } else if (this.user.password.length == 0) {
-                        alert("请您输入密码！")
-                    } else {
-                        axios.post("/user/register", this.user).then((res) => {
-                            if (res.data.code == 20011) {
-                                //将输入框清空
-                                this.name = "";
-                                this.password = "";
-                                alert(res.data.msg);
-                                location.href = "login.html"
-                            } else {
-                                alert(res.data.msg);
-                            }
-                        })
-                    }
-                }
-            }
         }
     })
 </script>

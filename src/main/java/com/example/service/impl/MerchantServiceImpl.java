@@ -69,10 +69,10 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantDao, Merchant> impl
             wrapper.eq("merchantID", merchant.getMerchantID());
         }
         if (merchant.getMerchantName() != null && !"".equals(merchant.getMerchantName())) {
-            wrapper.like("merchantName", merchant.getMerchantName());
+            wrapper.like("merchant_Name", merchant.getMerchantName());
         }
         if (merchant.getApprovalStatus() != null && !"".equals(merchant.getApprovalStatus())) {
-            wrapper.eq("approvalStatus", merchant.getApprovalStatus());
+            wrapper.eq("approval_Status", merchant.getApprovalStatus());
         }
         if (merchant.getUserID() != null) {
             wrapper.eq("userID", merchant.getUserID());

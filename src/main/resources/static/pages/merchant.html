@@ -340,6 +340,18 @@
                                 userLng: position.coords.longitude
                             };
                             console.log(this.userLocation)
+                            /*查询附近商家*/
+                            let _this = this
+                            axios({
+                                method: 'post',
+                                url: 'http://localhost:9080/merchant/searchNearbyMerchants',
+                                data: this.user,
+                                headers: { // 设置请求头
+                                    Authorization: localStorage.getItem("token")
+                                }
+                            }).then(function (response) {
+                                _this.merchants = response.data.data
+                            });
                         },
                         error => {
                             console.error('获取位置失败:', error);
@@ -348,18 +360,6 @@
                 } else {
                     console.error('浏览器不支持地理定位');
                 }
-                /*查询附近商家*/
-                let _this = this
-                axios({
-                    method: 'post',
-                    url: 'http://localhost:9080/merchant/searchNearbyMerchants',
-                    data: this.user,
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    _this.merchants = response.data.data
-                });
             },
             /*查看商家菜品*/
             checkMerchant(merchantID) {
@@ -390,6 +390,7 @@
             // 查询方法
             onSubmit() {
                 let _this = this
+                this.merchant.approvalStatus = 1
                 axios({
                     method: 'post',
                     url: 'http://localhost:9080/merchant/select',

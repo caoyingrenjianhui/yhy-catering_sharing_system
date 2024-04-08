@@ -135,7 +135,7 @@
                     <template slot-scope="scope">
                         <el-button
                                 type="primary"
-                                @click="checkMerchant(scope.row.merchantID)">
+                                @click="handle(scope.row.merchantID)">
                             审批通过
                         </el-button>
                     </template>
@@ -201,6 +201,7 @@
                 }).then(function (response) {
                     if (response.data.code == 20031) {
                         _this.onReset();
+                        alert(response.data.msg)
                     } else {
                         alert(response.data.msg)
                     }

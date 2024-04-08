@@ -44,8 +44,8 @@ public class MerchantController {
 
         // 构造查询条件
         QueryWrapper<Merchant> queryWrapper = Wrappers.<Merchant>query();
-        queryWrapper.apply("6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)) < ?",
-                user.getUserLat(), user.getUserLng(), user.getUserLat(), user.getMaxDistance());
+        queryWrapper.apply("SELECT *, (6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance FROM merchant ORDER BY distance",
+                user.getUserLat(), user.getUserLng(), user.getUserLat());
 
         // 调用 MyBatis-Plus 的 list 方法查询符合条件的商家信息
         List<Merchant> nearbyMerchants = merchantService.list(queryWrapper);

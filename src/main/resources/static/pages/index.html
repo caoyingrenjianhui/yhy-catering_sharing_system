@@ -1273,5 +1273,39 @@
     } else {
         document.getElementById('username').textContent = 'Guest';
     }
+
+    let userType; // 声明一个变量用于存储 userType 的值
+
+    // 获取 localStorage 中的 userType，并将其转换为数字类型
+    if (localStorage.getItem("userType") != null) {
+        userType = parseInt(localStorage.getItem("userType"));
+    } else {
+        userType = 0; // 如果 localStorage 中没有 userType，则设置默认值为 0 或其他适当的默认值
+    }
+    console.log(userType)
+</script>
+<script>
+    new Vue({
+        el: "#home",
+        data() {
+            return {
+                userType: localStorage.getItem("userType"),
+                user: {
+                    userID: '',
+                    username: '',
+                    password: '',
+                    phone: '',
+                    email: '',
+                    address: '',
+                    userType: '',
+                    photo: '',
+                    rePassword: '',
+                    token: ''
+                },
+            }
+        },
+        methods: {
+        }
+    })
 </script>
 </html>
