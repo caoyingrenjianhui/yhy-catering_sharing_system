@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>查看商家评论</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800&display=swap" rel="stylesheet">
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="../assets/css/style-starter.css">
+    <script src="../js/vue.js"></script>
+    <script src="../element-ui/lib/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+</head>
+
+<body>
+<div id="app">
+    <header id="site-header" class="fixed-top">
+        <section class="w3l-header-4">
+            <div class="container">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <h1><a class="navbar-brand" href="index.html">
+                        <span>餐饮分享系统</span>
+                    </a></h1>
+                    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
+                            data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="fa icon-expand fa-bars"></span>
+                        <span class="fa icon-close fa-times"></span>
+                    </button>
+                </nav>
+            </div>
+        </section>
+    </header>
+    <section class="w3l-about-breadcrumb text-left">
+        <div class="breadcrumb-bg breadcrumb-bg-about py-3">
+            <div class="container grid-breadcrumb">
+                <ul class="breadcrumbs-custom-path mt-md-2">
+                    <li><a href="index.html">主页</a></li>
+                    <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span><a
+                            href="merchant.html">商家列表</a>
+                    </li>
+                    <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span>商家评论</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!--商家列表-->
+    <template>
+        <div>
+            <div v-for="comment in comments" :key="comment.commentID">
+                <p>{{ comment.content }}</p>
+                <p>用户ID: {{ comment.userID }}</p>
+                <p>时间: {{ comment.timestamp }}</p>
+                <div v-if="comment.replies.length > 0">
+                    <p><strong>回复：</strong></p>
+                    <div v-for="reply in comment.replies" :key="reply.replyID">
+                        <p>{{ reply.content }}</p>
+                        <p>用户ID: {{ reply.userID }}</p>
+                        <p>时间: {{ reply.timestamp }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</div>
+<script src="../assets/js/jquery-3.3.1.min.js"></script>
+<script src="../assets/js/theme-change.js"></script>
+<script>
+    $(window).on("scroll", function () {
+        var scroll = $(window).scrollTop();
+
+        if (scroll >= 80) {
+            $("#site-header").addClass("nav-fixed");
+        } else {
+            $("#site-header").removeClass("nav-fixed");
+        }
+    });
+
+    //Main navigation Active Class Add Remove
+    $(".navbar-toggler").on("click", function () {
+        $("header").toggleClass("active");
+    });
+    $(document).on("ready", function () {
+        if ($(window).width() > 991) {
+            $("header").removeClass("active");
+        }
+        $(window).on("resize", function () {
+            if ($(window).width() > 991) {
+                $("header").removeClass("active");
+            }
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $('.navbar-toggler').click(function () {
+            $('body').toggleClass('noscroll');
+        })
+    });
+</script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../js/vue.js"></script>
+<script src="../element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="../element-ui/lib/theme-chalk/index.css">
+<script src="../js/axios-0.18.0.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        methods: {
+
+        },
+        data() {
+            return {
+                userType: localStorage.getItem('userType'),
+                userId: localStorage.getItem('userID'),
+                merchantID: localStorage.getItem("merchantID"),
+                comments: []
+            }
+        },
+        mounted: function () {
+            let _this = this
+            axios({
+                method: 'get',
+                url: 'http://localhost:9080/comment/selectByMerchantID/' + merchantID,
+                headers: { // 设置请求头
+                    Authorization: localStorage.getItem("token")
+                }
+            }).then(function (response) {
+                if (response.data.code == 20041) {
+                    _this.comments = response.data.data;
+                } else {
+                    alert(response.data.msg)
+                }
+            });
+        }
+    })
+</script>
+</body>
+
+</html>

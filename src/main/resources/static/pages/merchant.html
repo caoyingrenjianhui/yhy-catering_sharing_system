@@ -137,11 +137,13 @@
                         <el-button type="primary" v-if="userType==2" @click="beforeUpdatePhoto(scope.row.merchantID)">
                             修改图片
                         </el-button>
+                        <br><br>
                         <el-button
                                 type="primary"
                                 @click="checkMerchant(scope.row.merchantID)">
                             查看商家菜品
                         </el-button>
+                        <br><br>
                         <el-button
                                 type="primary"
                                 @click="selectByMerchantID(scope.row.merchantID)">
@@ -256,7 +258,7 @@
     <!--评论-->
     <div>
         <template>
-            <div v-if="comments.length">
+            <el-dialog>
                 <!-- 循环渲染评论 -->
                 <div v-for="comment in comments" :key="comment.commentID">
                     <div>{{ comment.content }}</div>
@@ -270,7 +272,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </el-dialog>
         </template>
     </div>
 
@@ -302,6 +304,16 @@
             }
         });
     });
+
+    // 从 localStorage 中获取用户名
+    const username = localStorage.getItem('name');
+    console.log(localStorage.getItem('name'))
+    // 显示用户名在页面上
+    if (username != null) {
+        document.getElementById('username').textContent = username;
+    } else {
+        document.getElementById('username').textContent = 'Guest';
+    }
 </script>
 <script>
     $(function () {
@@ -368,20 +380,8 @@
             },
             /*查看商家评论*/
             selectByMerchantID(merchantID) {
-                let _this = this
-                axios({
-                    method: 'get',
-                    url: 'http://localhost:9080/comment/selectByMerchantID/' + merchantID,
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20041) {
-                        _this.comments = response.data.data;
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
+                localStorage.setItem("merchantID",merchantID)
+                location.href="merchantComment.html"
             },
             hideModel() {
                 $('#add').modal('hide');
