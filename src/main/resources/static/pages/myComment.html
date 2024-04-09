@@ -43,7 +43,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="myOrder.html">我的订单</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item active">
                                 <a class="nav-link" href="myComment.html">我的评论</a>
                             </li>
                             <li class="nav-item">
@@ -83,7 +83,7 @@
                     <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span><a
                             href="merchant.html">商家列表</a>
                     </li>
-                    <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span>商家评论</li>
+                    <li class="active"><span class="fa fa-angle-double-right mx-2" aria-hidden="true"></span>我的评论</li>
                 </ul>
             </div>
         </div>
@@ -280,7 +280,7 @@
             let _this = this
             axios({
                 method: 'get',
-                url: 'http://localhost:9080/comment/selectByMerchantID/' + localStorage.getItem("merchantID"),
+                url: 'http://localhost:9080/comment',
                 headers: { // 设置请求头
                     Authorization: localStorage.getItem("token")
                 }

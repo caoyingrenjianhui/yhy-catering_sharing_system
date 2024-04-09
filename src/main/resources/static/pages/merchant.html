@@ -45,6 +45,12 @@
                                 <a class="nav-link" href="myOrder.html">我的订单</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="myComment.html">我的评论</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="myComplaint.html">我的投诉</a>
+                            </li>
+                            <li class="nav-item">
                                 <a v-if="userType==2" class="nav-link" href="complaints.html">处理投诉</a>
                             </li>
                             <li class="nav-item">
@@ -107,6 +113,11 @@
             <el-table
                     :data="merchants"
                     style="width: 100%">
+                <el-table-column
+                        prop="merchantID"
+                        label="商家ID"
+                        align="center">
+                </el-table-column>
                 <el-table-column
                         prop="photo"
                         label="商家头像"

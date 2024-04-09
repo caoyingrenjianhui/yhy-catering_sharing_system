@@ -45,6 +45,12 @@
                                 <a class="nav-link" href="myOrder.html">我的订单</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="myComment.html">我的评论</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="myComplaint.html">我的投诉</a>
+                            </li>
+                            <li class="nav-item">
                                 <a v-if="userType==2" class="nav-link" href="complaints.html">处理投诉</a>
                             </li>
                             <li class="nav-item">
@@ -99,18 +105,12 @@
                 <el-form-item>
                     <el-button v-if="!editing" type="primary" @click="toggleEditing">修改信息</el-button>
                     <el-button v-else type="primary" @click="updateUser">保存</el-button>
-                    <br><br>
-                    <el-button @click="getMyComment()">查看我的评论</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="visible=true">修改头像</el-button>
-                    <br><br>
-                    <el-button @click="getMyComplaint()">查看我的投诉</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
-                    <br><br>
-                    <el-button @click="getMyOrder()">查看我的订单</el-button>
                 </el-form-item>
             </el-form>
             <!--修改密码-->
@@ -149,139 +149,6 @@
                 </div>
             </template>
 
-            <!--我的评论-->
-            <div>
-                <template>
-                    <div v-if="comments.length">
-                        <!-- 循环渲染评论 -->
-                        <div v-for="comment in comments" :key="comment.commentID">
-                            <div>{{ comment.content }}</div>
-                            <div>{{ comment.userID }} - {{ comment.timestamp }}</div>
-
-                            <!-- 如果有回复，则循环渲染回复 -->
-                            <div v-if="comment.replies && comment.replies.length > 0">
-                                <div v-for="reply in comment.replies" :key="reply.replyID">
-                                    <div>{{ reply.content }}</div>
-                                    <div>{{ reply.userID }} - {{ reply.timestamp }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </div>
-            <!--我的投诉-->
-            <div>
-                <template>
-                    <el-table
-                            v-if="complaints.length"
-                            :data="complaints"
-                            style="width: 100%">
-                        <el-table-column
-                                prop="merchantID"
-                                label="商家ID"
-                                align="center">
-                        </el-table-column>
-                        <el-table-column
-                                prop="content"
-                                label="内容"
-                                align="center">
-                        </el-table-column>
-                        <el-table-column
-                                prop="status"
-                                label="状态"
-                                align="center">
-                            <template slot-scope="scope">
-                                <el-row v-if="scope.row.status==0">未处理</el-row>
-                                <el-row v-if="scope.row.status==1">已处理</el-row>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                align="center"
-                                label="操作">
-                            <template slot-scope="scope">
-                                <el-button type="primary" @click="beforeUpdate(scope.row)">修改</el-button>
-                                <el-button
-                                        type="primary"
-                                        @click="delete(scope.row.complaintID)">
-                                    删除
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </template>
-            </div>
-            <!--我的订单-->
-            <div>
-                <template>
-                    <el-table
-                            v-if="orderitems.length"
-                            :data="orderitems"
-                            style="width: 100%">
-                        <el-table-column
-                                prop="dishID"
-                                label="菜品"
-                                align="center">
-                            <template slot-scope="scope">
-                                {{ getDishName(scope.row.dishID) }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                prop="totalPrice"
-                                label="价格"
-                                align="center">
-                        </el-table-column>
-                        <el-table-column
-                                prop="status"
-                                label="状态"
-                                align="center">
-                            <template slot-scope="scope">
-                                <el-row v-if="scope.row.status==0">未处理</el-row>
-                                <el-row v-if="scope.row.status==1">已处理</el-row>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                align="center"
-                                label="操作">
-                            <template slot-scope="scope">
-                                <el-button
-                                        type="primary"
-                                        @click="deleteOrder(scope.row.orderID)">
-                                    删除
-                                </el-button>
-                                <el-button type="primary" @click="beforeAddComment(scope.row)">添加评论</el-button>
-                                <el-button type="primary" @click="finish(scope.row.orderID)">完成</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </template>
-                <template>
-                    <div>
-                        <el-dialog
-                                title="修改"
-                                :visible.sync="complaintVisible"
-                                width="30%"
-                        >
-                            <el-form>
-                                <input type="text" v-model="complaint.content"></input><br><br>
-                                <el-input @click="updateMyComplaint">提交</el-input>
-                            </el-form>
-                        </el-dialog>
-                    </div>
-                </template>
-                <template>
-                    <div>
-                        <el-dialog
-                                title="添加评论"
-                                :visible.sync="commentVisible"
-                                width="30%">
-                            <el-form>
-                                内容：<input type="text" v-model="comment.content"></input><br><br>
-                                <el-button @click="addComment">提交</el-button>
-                            </el-form>
-                        </el-dialog>
-                    </div>
-                </template>
-            </div>
         </div>
     </section>
 </div>
@@ -455,22 +322,6 @@
                 }
                 return dishNames
             },
-            getMyComment() {
-                let _this = this
-                axios({
-                    method: 'get',
-                    url: 'http://localhost:9080/comment',
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20041) {
-                        _this.comments = response.data.data;
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
-            },
             deleteOrder(orderID) {
                 let _this = this
                 axios({
@@ -559,7 +410,7 @@
             },
             beforeUpdate(rowDate) {
                 this.complaint = rowDate
-                complaintVisible = true
+                this.complaintVisible = true
             },
             updateMyComplaint() {
                 let _this = this
@@ -614,22 +465,6 @@
                     }
                 });
             },
-            getMyOrder() {
-                let _this = this
-                axios({
-                    method: 'get',
-                    url: 'http://localhost:9080/orderitem/getMyOrder/' + this.userID,
-                    headers: { // 设置请求头
-                        Authorization: localStorage.getItem("token")
-                    }
-                }).then(function (response) {
-                    if (response.data.code == 20041) {
-                        _this.orderitems = response.data.data;
-                    } else {
-                        alert(response.data.msg)
-                    }
-                });
-            }
         },
         data() {
             return {
@@ -654,39 +489,8 @@
                     modifyTime: ''
                 },
                 complaints: [],
-                complaint: {
-                    complaintID: '',
-                    userID: '',
-                    merchantID: '',
-                    content: '',
-                    createTime: '',
-                    modifyTime: '',
-                    status: '',
-                    handleID: ''
-                },
-                orderitem: {
-                    orderID: '',
-                    userID: '',
-                    dishID: '',
-                    totalPrice: '',
-                    status: '',
-                    createTime: '',
-                    modifyTime: '',
-                    payType: '',
-                },
-                orderitems: [],
-                comment: {
-                    commentID: '',
-                    userID: '',
-                    dishID: '',
-                    rating: '',
-                    content: '',
-                    timestamp: '',
-                    orderItemID: '',
-                    reply: ''
-                },
-                comments: [],
-                dishes: [],
+                complaint: {},
+
             }
         },
         mounted: function () {

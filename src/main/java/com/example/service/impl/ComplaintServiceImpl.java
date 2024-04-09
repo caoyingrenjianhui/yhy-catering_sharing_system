@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -76,10 +77,10 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintDao, Complaint> i
     @Override
     public Result select(Complaint complaint) {
         QueryWrapper<Complaint> wrapper = new QueryWrapper<>();
-        if (complaint.getStatus() != null) {
+        if (StringUtils.hasText(complaint.getStatus())) {
             wrapper.eq("status", complaint.getStatus());
         }
-        if (complaint.getUserID() != null) {
+        if (StringUtils.hasText(complaint.getUserID())) {
             wrapper.eq("userID", complaint.getUserID());
         }
         List<Complaint> list = complaintDao.selectList(wrapper);

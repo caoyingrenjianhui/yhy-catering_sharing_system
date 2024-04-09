@@ -45,6 +45,12 @@
                                 <a class="nav-link" href="myOrder.html">我的订单</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="myComment.html">我的评论</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="myComplaint.html">我的投诉</a>
+                            </li>
+                            <li class="nav-item">
                                 <a v-if="userType==2" class="nav-link" href="complaints.html">处理投诉</a>
                             </li>
                             <li class="nav-item">
@@ -70,7 +76,6 @@
             </div>
         </section>
     </header>
-
 
     <section class="w3l-products py-5" id="projects">
         <div class="container py-lg-3">
@@ -312,7 +317,7 @@
             getDishName(dishID) {
                 let dishNames = "";
                 for (let i = 0; i < this.dishes.length; i++) {
-                    if (this.dishes[i].dishID == dishID) {
+                    if (dishID.includes(this.dishes[i].dishID)) {
                         dishNames += this.dishes[i].dishName + ";"; // 将找到的菜品名称拼接到字符串中
                     }
                 }
@@ -543,6 +548,15 @@
             let _this = this;
             axios({
                 method: 'get',
+                url: 'http://localhost:9080/dish/getAll',
+                headers: { // 设置请求头
+                    Authorization: localStorage.getItem("token")
+                }
+            }).then(function (response) {
+                _this.dishes = response.data.data
+            });
+            axios({
+                method: 'get',
                 url: 'http://localhost:9080/orderitem/getMyOrder/' + this.userID,
                 headers: { // 设置请求头
                     Authorization: localStorage.getItem("token")
@@ -553,15 +567,6 @@
                 } else {
                     alert(response.data.msg)
                 }
-            });
-            axios({
-                method: 'get',
-                url: 'http://localhost:9080/dish/getAll',
-                headers: { // 设置请求头
-                    Authorization: localStorage.getItem("token")
-                }
-            }).then(function (response) {
-                _this.dishes = response.data.data
             });
         }
     })
