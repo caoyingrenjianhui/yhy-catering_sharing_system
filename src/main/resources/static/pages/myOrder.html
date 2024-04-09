@@ -74,7 +74,7 @@
 
     <section class="w3l-products py-5" id="projects">
         <div class="container py-lg-3">
-            <div>
+            <div style="margin-top: 100px">
                 <template>
                     <el-table
                             v-if="orderitems.length"
@@ -99,7 +99,8 @@
                                 align="center">
                             <template slot-scope="scope">
                                 <el-row v-if="scope.row.status==0">未处理</el-row>
-                                <el-row v-if="scope.row.status==1">已处理</el-row>
+                                <el-row v-if="scope.row.status==1">已接单</el-row>
+                                <el-row v-if="scope.row.status==3">已完成</el-row>
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -302,6 +303,7 @@
                 }).then(function (response) {
                     if (response.data.code == 20011) {
                         _this.onReset()
+                        _this.commentVisible = false
                     } else {
                         alert(response.data.msg)
                     }

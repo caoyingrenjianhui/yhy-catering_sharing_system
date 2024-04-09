@@ -87,6 +87,11 @@ public class MerchantController {
         return merchantService.handle(id);
     }
 
+    @GetMapping("/byMerchant/{merchantID}")
+    public Result byMerchant(@PathVariable Integer merchantID) {
+        return merchantService.byMerchant(merchantID);
+    }
+
 
     //    上传头像
     @PostMapping("/upload")

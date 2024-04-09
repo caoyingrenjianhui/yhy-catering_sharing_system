@@ -32,4 +32,5 @@ public interface IMerchantService extends IService<Merchant> {
 
     Result handle(Integer id);
 
+    Result byMerchant(Integer merchantID);
 }

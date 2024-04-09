@@ -98,9 +98,6 @@
             <el-button type="primary" data-toggle="modal" data-target="#add" @click="beforeAdd" v-if="userType==0">
                 商家注册
             </el-button>
-            <el-button type="primary" data-toggle="modal" data-target="#complaint"
-                       @click="beforeAddComplaint(scope.row.merchantID)">投诉
-            </el-button>
             <el-button type="primary" @click="getLocation">获取位置并查询附近商家</el-button> <!-- 添加获取位置按钮 -->
         </el-form-item>
     </el-form>
@@ -154,6 +151,15 @@
                                 type="primary"
                                 @click="selectByMerchantID(scope.row.merchantID)">
                             查看商家评论
+                        </el-button>
+                        <br><br>
+                        <el-button
+                                type="primary"
+                                @click="openDialog(scope.row.merchantID)">
+                            查看销售统计
+                        </el-button>
+                        <el-button type="primary" data-toggle="modal" data-target="#complaint"
+                                   @click="beforeAddComplaint(scope.row.merchantID)">投诉
                         </el-button>
                     </template>
                 </el-table-column>
@@ -282,6 +288,11 @@
         </template>
     </div>
 
+    <!--销售统计-->
+    <el-dialog :visible.sync="dialogVisible" title="销售统计" width="30%">
+        <canvas id="salesChart" width="100" height="100"></canvas>
+    </el-dialog>
+
 </div>
 <script src="../assets/js/jquery-3.3.1.min.js"></script>
 <script src="../assets/js/theme-change.js"></script>
@@ -333,10 +344,63 @@
 <script src="../element-ui/lib/index.js"></script>
 <link rel="stylesheet" href="../element-ui/lib/theme-chalk/index.css">
 <script src="../js/axios-0.18.0.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/echarts.min.js"></script>
 <script>
     new Vue({
         el: "#app",
         methods: {
+            openDialog(merchantID) {
+                this.dialogVisible = true;
+                this.showSalesStatistics(merchantID);
+            },
+            async showSalesStatistics(merchantID) {
+                // 异步加载 Chart.js
+                await import('https://cdn.jsdelivr.net/npm/chart.js');
+                let self = this; // 保存 Vue 实例的上下文
+                axios({
+                    method: 'get',
+                    url: 'http://localhost:9080/merchant/byMerchant/'+merchantID,
+                    headers: {
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20041) {
+                        self.data = response.data.data; // 使用保存的上下文访问 Vue 实例的属性
+
+                        const labels = Object.keys(self.data);
+                        const values = Object.values(self.data);
+
+                        // 创建柱形图
+                        const ctx = document.getElementById('salesChart').getContext('2d');
+                        if (this.chartInstance) {
+                            this.chartInstance.destroy();
+                        }
+                        this.chartInstance = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Sales',
+                                    data: values,
+                                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
             getUserID() {
                 this.merchant.userID = localStorage.getItem("userID");
             },
@@ -386,8 +450,8 @@
             },
             /*查看商家评论*/
             selectByMerchantID(merchantID) {
-                localStorage.setItem("merchantID",merchantID)
-                location.href="merchantComment.html"
+                localStorage.setItem("merchantID", merchantID)
+                location.href = "merchantComment.html"
             },
             hideModel() {
                 $('#add').modal('hide');
@@ -397,6 +461,7 @@
             onSubmit() {
                 let _this = this
                 this.merchant.approvalStatus = 1
+                this.merchant.userID = null
                 axios({
                     method: 'post',
                     url: 'http://localhost:9080/merchant/select',
@@ -419,23 +484,8 @@
             },
             beforeAdd() {
                 this.updateFlag = 0
-                this.merchant.merchantID = null
-                this.merchant.merchantName = null
-                this.merchant.email = null
-                this.merchant.phone = null
-                this.merchant.address = null
-                this.merchant.approvalStatus = null
-                this.merchant.photo = null
-                this.merchant.longitude = null
-                this.merchant.latitude = null
-                this.complaint.complaintID = null
-                this.complaint.userID = null
-                this.complaint.merchantID = null
-                this.complaint.content = null
-                this.complaint.createTime = null
-                this.complaint.modifyTime = null
-                this.complaint.status = null
-                this.complaint.handleI = null
+                this.merchant = {}
+                this.complaint = {}
             },
             addMerchant() {
                 let _this = this
@@ -529,7 +579,7 @@
                     }
                 }).then(function (response) {
                     if (response.data.code == 20011) {
-                        _this.onReset()
+                        _this.complaint = {}
                         _this.hideModel()
                     } else {
                         alert(response.data.msg)
@@ -539,6 +589,8 @@
         },
         data() {
             return {
+                chartInstance: null,
+                dialogVisible: false,
                 userType: localStorage.getItem('userType'),
                 userId: localStorage.getItem('userID'),
                 updateFlag: 0,
@@ -548,42 +600,9 @@
                     userLng: ''
                 },
                 userLocation: null,// 用于存储用户地理位置信息
-                complaint: {
-                    complaintID: '',
-                    userID: '',
-                    merchantID: '',
-                    content: '',
-                    createTime: '',
-                    modifyTime: '',
-                    status: '',
-                    handleID: ''
-                },
-                merchant: {
-                    merchantID: '',
-                    merchantName: '',
-                    email: '',
-                    phone: '',
-                    address: '',
-                    approvalStatus: '',
-                    userID: '',
-                    longitude: '',
-                    latitude: '',
-                    isdel: '',
-                    photo: ''
-                },
-                merchants: [{
-                    merchantID: '',
-                    merchantName: '',
-                    email: '',
-                    phone: '',
-                    address: '',
-                    approvalStatus: '',
-                    userID: '',
-                    longitude: '',
-                    latitude: '',
-                    isdel: '',
-                    photo: ''
-                }],
+                complaint: {},
+                merchant: {},
+                merchants: [],
                 appointments: [],
                 appointment: {
                     doctorID: '',
@@ -606,9 +625,12 @@
             }).then(function (response) {
                 _this.merchants = response.data.data
             });
+            this.showSalesStatistics(merchantID);
         }
     })
 </script>
+
+
 </body>
 
 </html>

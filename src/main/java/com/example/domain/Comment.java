@@ -4,13 +4,16 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author 尹洪运
@@ -43,10 +46,10 @@ public class Comment implements Serializable {
     @TableField(value = "merchantID")
     private Integer merchantID;
 
-    private Integer reply;
+    @TableField(exist = false)
+    private List<Comment> reply;
 
     @TableLogic
     private Integer isdel;
-
 
 }

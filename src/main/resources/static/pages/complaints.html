@@ -27,8 +27,8 @@
                         <span>餐饮分享系统</span>
                     </a></h1>
                     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
-                            data-target="#navbarNav"
-                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                            aria-label="Toggle navigation">
                         <span class="fa icon-expand fa-bars"></span>
                         <span class="fa icon-close fa-times"></span>
                     </button>
@@ -123,7 +123,7 @@
                         align="center"
                         label="操作">
                     <template slot-scope="scope">
-                        <el-button type="primary" @click="handle(scope.row.complaintID)">已处理</el-button>
+                        <el-button type="primary" @click="handle(scope.row.complaintID)">处理</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -166,6 +166,19 @@
         })
     });
 </script>
+<script>
+    // 从 localStorage 中获取用户名
+    const username = localStorage.getItem('name');
+    console.log(localStorage.getItem('name'))
+    // 显示用户名在页面上
+    if (username != null) {
+        document.getElementById('username').textContent = username;
+    } else {
+        document.getElementById('username').textContent = 'Guest';
+    }
+</script>
+<script src="../js/bootstrap.js"></script>
+<script src="../js/jquery-2.2.3.min.js"></script>
 <script src="../assets/js/bootstrap.min.js"></script>
 <script src="../js/vue.js"></script>
 <script src="../element-ui/lib/index.js"></script>
@@ -186,7 +199,7 @@
                     }
                 }).then(function (response) {
                     if (response.data.code == 20031) {
-                        _this.onReset();
+                        location.reload()
                     } else {
                         alert(response.data.msg)
                     }
@@ -202,7 +215,7 @@
                 axios({
                     method: 'post',
                     url: 'http://localhost:9080/complaint/select',
-                    data: this.merchant,
+                    data: this.complaint,
                     headers: { // 设置请求头
                         Authorization: localStorage.getItem("token")
                     }
@@ -259,26 +272,8 @@
                 updateFlag: 0,
                 visible: false,
                 userLocation: null,// 用于存储用户地理位置信息
-                complaint: {
-                    complaintID: '',
-                    userID: '',
-                    merchantID: '',
-                    merchantID: '',
-                    merchantID: '',
-                    modifyTime: '',
-                    status: '',
-                    handleID: ''
-                },
-                complaints: [{
-                    complaintID: '',
-                    userID: '',
-                    merchantID: '',
-                    merchantID: '',
-                    merchantID: '',
-                    modifyTime: '',
-                    status: '',
-                    handleID: ''
-                }],
+                complaint: {},
+                complaints: [],
             }
         },
         mounted: function () {

@@ -47,6 +47,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintDao, Complaint> i
         Complaint complaint = complaintDao.selectById(id);
         Map<String, Object> map = ThreadLocalUtil.get();
         complaint.setHandleID((String) map.get("userID"));
+        complaint.setStatus("1");
         int i = complaintDao.updateById(complaint);
         if (i == 0) {
             return new Result(null, Code.UPDATE_ERR, "修改失败");
@@ -68,7 +69,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintDao, Complaint> i
 
     @Override
     public Result getAll() {
-        List<User> list = complaintDao.getAll();
+        List<Complaint> list = complaintDao.getAll();
         return new Result(list, Code.GET_OK, "查询成功");
     }
 

@@ -97,7 +97,8 @@
                                 align="center">
                             <template slot-scope="scope">
                                 <el-row v-if="scope.row.status==0">未处理</el-row>
-                                <el-row v-if="scope.row.status==1">已处理</el-row>
+                                <el-row v-if="scope.row.status==1">已接单</el-row>
+                                <el-row v-if="scope.row.status==3">已完成</el-row>
                             </template>
                         </el-table-column>
                         <el-table-column

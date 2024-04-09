@@ -3,6 +3,9 @@ package com.example.dao;
 import com.example.domain.Orderitem;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +18,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface OrderitemDao extends BaseMapper<Orderitem> {
 
+    @Select("select * from orderitem where merchantID = #{merchantID}")
+    List<Orderitem> selectListByMerchantID(Integer merchantID);
 }

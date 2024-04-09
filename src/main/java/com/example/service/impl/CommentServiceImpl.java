@@ -38,6 +38,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     public Result add(Comment comment) {
         Map<String, Object> map = ThreadLocalUtil.get();
         comment.setUserID((String) map.get("userID"));
+        if (comment.getRating() == null) {
+            comment.setRating(0);
+        }
         comment.setTimestamp(LocalDate.now().toString());
         int insert = commentDao.insert(comment);
         if (insert == 0) {
@@ -51,6 +54,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         QueryWrapper<Merchant> queryWrapper = new QueryWrapper<>();
         Map<String, Object> map = ThreadLocalUtil.get();
         queryWrapper.eq("userID", (String) map.get("userID")); // 指定查询条件，这里假设字段名为userId
+        queryWrapper.eq("rating", 0);
         Merchant merchant = merchantDao.selectOne(queryWrapper);
         QueryWrapper<Comment> wrapper = new QueryWrapper<>();
         if (merchant != null) {
@@ -65,7 +69,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     public Result selectByMerchantID(Integer merchantID) {
         QueryWrapper<Comment> wrapper = new QueryWrapper<>();
         wrapper.eq("merchantID", merchantID);
+        wrapper.eq("rating", 0);
         List<Comment> comments = commentDao.selectList(wrapper);
+        for (Comment comment : comments) {
+            QueryWrapper<Comment> replyWrapper = new QueryWrapper<>();
+            replyWrapper.eq("rating", comment.getOrderItemID());
+            List<Comment> replies = commentDao.selectList(replyWrapper);
+            comment.setReply(replies);
+        }
         return new Result(comments, Code.GET_OK, "查询成功");
     }
 

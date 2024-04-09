@@ -20,5 +20,5 @@ import java.util.List;
 public interface ComplaintDao extends BaseMapper<Complaint> {
 
     @Select("select * from complaint")
-    List<User> getAll();
+    List<Complaint> getAll();
 }

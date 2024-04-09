@@ -32,6 +32,39 @@
                         <span class="fa icon-expand fa-bars"></span>
                         <span class="fa icon-close fa-times"></span>
                     </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-lg-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">主页 </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="merchant.html">商家列表</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="myOrder.html">我的订单</a>
+                            </li>
+                            <li class="nav-item">
+                                <a v-if="userType==2" class="nav-link" href="complaints.html">处理投诉</a>
+                            </li>
+                            <li class="nav-item">
+                                <a v-if="userType==2" class="nav-link" href="handleMercant.html">审核商家入驻</a>
+                            </li>
+                            <li class="nav-item">
+                                <a v-if="userType==1" class="nav-link" href="handleOrder.html">接单</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav search-right mt-lg-0 mt-2">
+                            <li class="nav-item mr-3" title="Search"><a href="#search" class="btn search-search">
+                                <span class="fa fa-search" aria-hidden="true"></span></a></li>
+                            <li class="nav-item"><a href="login.html"
+                                                    class="btn btn-primary btn-style d-none d-lg-block btn-style mr-2"><span
+                                    class="fa fa-phone mr-3" aria-hidden="true"></span> 登录 </a>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li><a href="information.html" class="nav-link" id="username"></a></li>
+                        </ul>
+                    </div>
                 </nav>
             </div>
         </section>

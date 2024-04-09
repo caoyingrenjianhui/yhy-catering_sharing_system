@@ -32,6 +32,39 @@
                         <span class="fa icon-expand fa-bars"></span>
                         <span class="fa icon-close fa-times"></span>
                     </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-lg-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">主页 </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="merchant.html">商家列表</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="myOrder.html">我的订单</a>
+                            </li>
+                            <li class="nav-item">
+                                <a v-if="userType==2" class="nav-link" href="complaints.html">处理投诉</a>
+                            </li>
+                            <li class="nav-item">
+                                <a v-if="userType==2" class="nav-link" href="handleMercant.html">审核商家入驻</a>
+                            </li>
+                            <li class="nav-item">
+                                <a v-if="userType==1" class="nav-link" href="handleOrder.html">接单</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav search-right mt-lg-0 mt-2">
+                            <li class="nav-item mr-3" title="Search"><a href="#search" class="btn search-search">
+                                <span class="fa fa-search" aria-hidden="true"></span></a></li>
+                            <li class="nav-item"><a href="login.html"
+                                                    class="btn btn-primary btn-style d-none d-lg-block btn-style mr-2"><span
+                                    class="fa fa-phone mr-3" aria-hidden="true"></span> 登录 </a>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li><a href="information.html" class="nav-link" id="username"></a></li>
+                        </ul>
+                    </div>
                 </nav>
             </div>
         </section>
@@ -49,23 +82,44 @@
             </div>
         </div>
     </section>
-    <template>
-        <div>
-            <div v-for="comment in comments" :key="comment.commentID">
-                <p>{{ comment.content }}</p>
-                <p>用户ID: {{ comment.userID }}</p>
-                <p>时间: {{ comment.timestamp }}</p>
-                <div v-if="comment.replies.length > 0">
-                    <p><strong>回复：</strong></p>
-                    <div v-for="reply in comment.replies" :key="reply.replyID">
-                        <p>{{ reply.content }}</p>
-                        <p>用户ID: {{ reply.userID }}</p>
-                        <p>时间: {{ reply.timestamp }}</p>
+    <section class="w3l-products py-5" id="projects">
+        <div class="container py-lg-3">
+            <div>
+                <template>
+                    <div>
+                        <h2>评论列表</h2>
+                        <div v-for="comment in comments" :key="comment.complaintID" class="comment-container">
+                            <p class="comment-content">内容：{{ comment.content }}</p>
+                            <p class="comment-user">用户ID: {{ comment.userID }}</p>
+                            <button @click="beforeAddComment(comment)">回复</button>
+                            <div v-if="comment.reply.length > 0" class="reply-container">
+                                <h4>回复：</h4>
+                                <div v-for="reply1 in comment.reply" :key="reply1.complaintID" class="reply">
+                                    <p>{{ reply1.content }}</p>
+                                    <p>用户ID: {{ reply1.userID }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </template>
             </div>
         </div>
-    </template>
+
+        <template>
+            <div>
+                <el-dialog
+                        title="回复评论"
+                        :visible.sync="commentVisible"
+                        width="30%">
+                    <el-form>
+                        内容：<input type="text" v-model="comment.content"></input><br><br>
+                        <el-button @click="addComment">提交</el-button>
+                    </el-form>
+                </el-dialog>
+            </div>
+        </template>
+
+    </section>
 
 </div>
 <script src="../assets/js/jquery-3.3.1.min.js"></script>
@@ -108,17 +162,101 @@
 <script src="../element-ui/lib/index.js"></script>
 <link rel="stylesheet" href="../element-ui/lib/theme-chalk/index.css">
 <script src="../js/axios-0.18.0.js"></script>
+<style>
+    .comment-container {
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+    }
+
+    .comment-content {
+        font-weight: bold;
+    }
+
+    .comment-user {
+        margin-bottom: 5px;
+    }
+
+    .reply-container {
+        margin-top: 10px;
+    }
+
+    .reply {
+        margin-top: 5px;
+        padding: 5px;
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+    }
+</style>
+
 <script>
     new Vue({
         el: "#app",
-        methods: {},
+        methods: {
+            //重置查询
+            onReset() {
+                this.comment = {}
+                let _this = this
+                axios({
+                    method: 'get',
+                    url: 'http://localhost:9080/comment/selectByMerchantID/' + localStorage.getItem("merchantID"),
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20041) {
+                        _this.comments = response.data.data;
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
+            // 添加评论
+            addComment() {
+                console.log("添加评论")
+                // 构造评论对象，包括 userID、merchantID、content 等字段
+                // 调用后端接口将评论对象发送到服务器保存
+                // 清空输入框内容
+                // 刷新评论列表
+                // ...
+            },
+            // 回复评论
+            beforeAddComment(rowDate) {
+                this.comment.merchantID = rowDate.merchantID
+                this.comment.rating = rowDate.commentID
+                console.log(rowDate.commentID)
+                console.log(this.comment.rating)
+                this.commentVisible = true
+            },
+            addComment() {
+                let _this = this
+                console.log(this.comment)
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:9080/comment/add',
+                    data: this.comment,
+                    headers: { // 设置请求头
+                        Authorization: localStorage.getItem("token")
+                    }
+                }).then(function (response) {
+                    if (response.data.code == 20011) {
+                        _this.onReset()
+                        _this.commentVisible = false
+                    } else {
+                        alert(response.data.msg)
+                    }
+                });
+            },
+        },
         data() {
             return {
                 userType: localStorage.getItem('userType'),
                 userId: localStorage.getItem('userID'),
                 merchantID: localStorage.getItem("merchantID"),
+                commentVisible : false,
                 comments: [],
-                comment:{}
+                comment: {}
             }
         },
         mounted: function () {

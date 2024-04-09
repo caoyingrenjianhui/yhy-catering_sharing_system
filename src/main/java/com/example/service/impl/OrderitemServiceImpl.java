@@ -59,6 +59,7 @@ public class OrderitemServiceImpl extends ServiceImpl<OrderitemDao, Orderitem> i
         if (orderitem == null) {
             return new Result(null, Code.GET_ERR, "无此订单");
         }
+        orderitem.setStatus("3");
         int i = orderitemDao.updateById(orderitem);
         if (i == 0) {
             return new Result(orderitem, Code.SAVE_ERR, "修改失败");

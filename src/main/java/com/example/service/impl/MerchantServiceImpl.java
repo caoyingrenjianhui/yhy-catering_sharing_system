@@ -3,12 +3,10 @@ package com.example.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.controller.Code;
 import com.example.controller.Result;
+import com.example.dao.OrderitemDao;
 import com.example.dao.UserDao;
-import com.example.domain.Complaint;
-import com.example.domain.Merchant;
+import com.example.domain.*;
 import com.example.dao.MerchantDao;
-import com.example.domain.User;
-import com.example.domain.UserType;
 import com.example.service.IMerchantService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.utils.ThreadLocalUtil;
@@ -16,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +33,8 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantDao, Merchant> impl
     private MerchantDao merchantDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private OrderitemDao orderitemDao;
 
     @Override
     public Result add(Merchant merchant) {
@@ -114,6 +115,25 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantDao, Merchant> impl
             return new Result(null, Code.UPDATE_ERR, "处理失败");
         }
         return new Result(merchant, Code.UPDATE_OK, "处理成功");
+    }
+
+    @Override
+    public Result byMerchant(Integer merchantID) {
+        // 查询数据库，获取该商家的订单项数据
+        List<Orderitem> orderItems = orderitemDao.selectListByMerchantID(merchantID);
+
+        // 统计销售数量
+        Map<String, Integer> salesStatistics = new HashMap<>();
+        for (Orderitem orderItem : orderItems) {
+            // 解析订单项中的菜品ID
+            String[] dishIDs = orderItem.getDishID().split(";");
+            for (String dishID : dishIDs) {
+                // 更新销售数量统计
+                salesStatistics.put(dishID, salesStatistics.getOrDefault(dishID, 0) + 1);
+            }
+        }
+
+        return new Result(salesStatistics,Code.GET_OK,"查询成功");
     }
 
 }
