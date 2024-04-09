@@ -58,9 +58,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintDao, Complaint> i
 
     @Override
     public Result delete(Integer id) {
-        Complaint complaint = complaintDao.selectById(id);
-        complaint.setIsdel(0);
-        int i = complaintDao.updateById(complaint);
+        int i = complaintDao.deleteById(id);
         if (i != 0) {
             return new Result(null, Code.DELETE_OK, "删除成功");
         } else {
