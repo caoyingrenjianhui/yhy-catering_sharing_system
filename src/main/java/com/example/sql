@@ -13,14 +13,12 @@ create table if not exists comment
 	commentID int auto_increment
 		primary key,
 	userID int null,
-	dishID int null,
 	rating int null,
 	content text null,
 	timestamp timestamp null,
 	merchantID int null,
-	reply int null,
-	orderItemID int null,
-	isdel int default 0 null
+	isdel int default 0 null,
+	orderItemID int null
 );
 
 create table if not exists complaint
@@ -32,7 +30,8 @@ create table if not exists complaint
 	content text null,
 	timestamp timestamp null,
 	status varchar(50) default '0' null,
-	isdel int default 0 null
+	isdel int default 0 null,
+	handleID int null
 );
 
 create table if not exists dish
@@ -60,7 +59,7 @@ create table if not exists merchant
 	longitude decimal(10,6) null,
 	latitude decimal(10,6) null,
 	isdel int default 0 null,
-	photo varchar(50) null
+	photo varchar(200) null
 );
 
 create table if not exists orderitem
@@ -73,7 +72,8 @@ create table if not exists orderitem
 	status varchar(50) null,
 	timestamp timestamp null,
 	pay_Type varchar(50) null,
-	isdel int default 0 null
+	isdel int default 0 null,
+	dishID varchar(100) null
 );
 
 create table if not exists salesreport
@@ -97,7 +97,7 @@ create table if not exists user
 	address varchar(100) null,
 	create_time date null,
 	modify_time date null,
-	user_type int default 0 null,
+	user_type int null,
 	isdel int default 0 null,
 	photo varchar(50) null
 );
